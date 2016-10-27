@@ -20,18 +20,46 @@ package org.wso2.carbon.identity.provider.internal;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.osgi.framework.BundleContext;
+import org.osgi.service.component.annotations.Activate;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Deactivate;
+import org.wso2.carbon.identity.provider.IdentityProviderService;
+import org.wso2.carbon.identity.provider.IdentityProviderServiceImpl;
 
-/**
- * @scr.component name="idp.mgt.dscomponent" immediate="true"
- * @scr.reference name="idp.mgt.event.listener.service"
- * interface="org.wso2.carbon.idp.mgt.listener.IdentityProviderMgtListener"
- * cardinality="0..n" policy="dynamic"
- * bind="setIdentityProviderMgtListenerService"
- * unbind="unsetIdentityProviderMgtListenerService"
- */
+import java.util.Dictionary;
+import java.util.Hashtable;
+
+@Component(name = "org.wso2.carbon.identity.provider.IdentityProviderServiceComponent",
+           service = {IdentityProviderService.class},
+           immediate = true)
 public class IdentityProviderServiceComponent {
 
     private static Logger log = LoggerFactory.getLogger(IdentityProviderServiceComponent.class);
+    private BundleContext bundleContext;
+
+    /**
+     * Get called when this osgi component get registered.
+     *
+     * @param bundleContext Context of the osgi component.
+     */
+    @Activate
+    protected void activate(BundleContext bundleContext) {
+        this.bundleContext = bundleContext;
+        log.debug("Identity Provider Service Component activated.");
+
+        Dictionary<String, String> dictionary = new Hashtable<>();
+        bundleContext.registerService(IdentityProviderService.class, new IdentityProviderServiceImpl(), dictionary);
+    }
+
+    /**
+     * Get called when this osgi component get unregistered.
+     */
+    @Deactivate
+    protected void deactivate() {
+        this.bundleContext = null;
+        log.debug("Identity Provider Service Component deactivated.");
+    }
 
 
 }

@@ -108,6 +108,14 @@
             <artifactId>slf4j-log4j12</artifactId>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>org.wso2.eclipse.osgi</groupId>
+            <artifactId>org.eclipse.osgi.services</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.felix</groupId>
+            <artifactId>org.apache.felix.scr.ds-annotations</artifactId>
+        </dependency>
     </dependencies>
 
 
@@ -122,8 +130,8 @@
         <import.package>
             org.slf4j.*;version="${slf4j.version}",
             org.wso2.carbon.identity.provider.common.*;version="6-SNAPSHOT",
+            org.osgi.service.component.annotations.*
         </import.package>
-
         <dsannotations>*</dsannotations>
     </properties>
 
