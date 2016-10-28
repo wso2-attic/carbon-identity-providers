@@ -21,15 +21,16 @@ package org.wso2.carbon.identity.provider.dao;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.wso2.carbon.identity.provider.IdentityProviderException;
-import org.wso2.carbon.identity.provider.common.model.IdentityProvider;
 import org.wso2.carbon.identity.provider.common.model.IdPMetadata;
+import org.wso2.carbon.identity.provider.common.model.IdentityProvider;
 import org.wso2.carbon.identity.provider.common.model.ResidentIdentityProvider;
 
 import java.util.List;
+
 /**
  * Data Access Object to the data storage to retrieve and store identity provider and related configurations.
  */
-public class IdentityProviderDAO {
+public class IdentityProviderDAO implements JdbcBasedDAO {
 
     private static final Logger log = LoggerFactory.getLogger(IdentityProviderDAO.class);
 
@@ -60,7 +61,7 @@ public class IdentityProviderDAO {
      * @return
      * @throws IdentityProviderException
      */
-    public List<IdentityProvider> listIdentityProviders() throws IdentityProviderException {
+    public List<IdentityProvider> listIdentityProviders(boolean includeResidentIdP) throws IdentityProviderException {
 
         final String GET_ALL_IDP_SQL = "SELECT ID, NAME, DISPLAY_NAME, DESCRIPTION, "
                 + "IS_FEDERATION_HUB, IS_LOCAL_CLAIM_DIALECT, IS_ENABLED, ID FROM IDP";
@@ -68,12 +69,18 @@ public class IdentityProviderDAO {
         List<IdentityProvider> idps = this.jdbcTemplate.executeQuery(GET_ALL_IDP_SQL, (resultSet, rowNumber) -> {
             IdentityProvider.IdentityProviderBuilder identityProviderBuilder = ResidentIdentityProvider
                     .newBuilder(resultSet.getInt("ID"), resultSet.getString("NAME"));
-            identityProviderBuilder.setDialectId(1);
             identityProviderBuilder.build();
-
             return identityProviderBuilder.build();
         });
 
         return idps;
+    }
+
+    public IdentityProvider getIdentityProvider(int identityProviderId) {
+        return null;
+    }
+
+    public List<IdentityProvider> listIdentityProviderByName(String identityProviderName) {
+        return null;
     }
 }

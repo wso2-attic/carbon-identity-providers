@@ -45,9 +45,9 @@ public class IdentityProviderDAOTest {
         IdentityProviderDAO identityProviderDAO = new IdentityProviderDAO();
         identityProviderDAO.setJdbcTemplate(jdbcTemplate);
 
-        jdbcTemplate.executeUpdate("INSERT INTO IDP (NAME, DISPLAY_NAME, DESCRIPTION) "
-                + "VALUES ('No Name', 'No Name', 'No Name')");
-        List<IdentityProvider> identityProviderList = identityProviderDAO.listIdentityProviders();
+        jdbcTemplate.executeUpdate(
+                "INSERT INTO IDP (NAME, DISPLAY_NAME, DESCRIPTION) VALUES ('No Name', 'No Name', 'No Name')");
+        List<IdentityProvider> identityProviderList = identityProviderDAO.listIdentityProviders(true);
         assertNotNull(identityProviderList, "The identity Providers shuld not be null");
         assertEquals(identityProviderList.size(), 1);
 
@@ -61,17 +61,16 @@ public class IdentityProviderDAOTest {
 
         IdentityProvider identityProvider = createIdentityProvider("Test Name", "Test Label", "Test Desc");
 
-        List<IdentityProvider> identityProviderList = identityProviderDAO.listIdentityProviders();
+        List<IdentityProvider> identityProviderList = identityProviderDAO.listIdentityProviders(true);
         assertEquals(identityProviderList.size(), 0, "There are not IdP initially");
 
         identityProviderDAO.createIdentityProvider(identityProvider);
-        identityProviderList = identityProviderDAO.listIdentityProviders();
+        identityProviderList = identityProviderDAO.listIdentityProviders(true);
         assertEquals(identityProviderList.size(), 1, "There should be on IdP after adding");
     }
 
     private IdentityProvider createIdentityProvider(String name, String label, String description) {
-        IdentityProvider.IdentityProviderBuilder identityProviderBuilder = ResidentIdentityProvider
-                .newBuilder(0, name);
+        IdentityProvider.IdentityProviderBuilder identityProviderBuilder = ResidentIdentityProvider.newBuilder(0, name);
         identityProviderBuilder.setDialectId(1).setDisplayLabel(label).setDescription(description);
         identityProviderBuilder.build();
 
@@ -81,13 +80,13 @@ public class IdentityProviderDAOTest {
     private JdbcTemplate getJdbcTemplate() {
         DataSource ds = JdbcConnectionPool.create("jdbc:h2:mem:test;DB_CLOSE_DELAY=-1", "user", "password");
 
-        try( InputStream databaseInputStream = this.getClass().getClassLoader().getResourceAsStream("dbscripts/h2.sql");
+        try (InputStream databaseInputStream = this.getClass().getClassLoader().getResourceAsStream("dbscripts/h2.sql");
                 Connection conn = ds.getConnection();
-            Statement statement = conn.createStatement()) {
+                Statement statement = conn.createStatement()) {
             statement.execute("DROP ALL OBJECTS");
             String sql = read(databaseInputStream);
             statement.executeUpdate(sql);
-        }catch (SQLException|IOException e){
+        } catch (SQLException | IOException e) {
             fail("Could not create in-memory h2 database", e);
         }
 
@@ -95,11 +94,10 @@ public class IdentityProviderDAOTest {
         return jdbcTemplate;
     }
 
-    private  String read(InputStream input) throws IOException {
+    private String read(InputStream input) throws IOException {
         try (BufferedReader buffer = new BufferedReader(new InputStreamReader(input))) {
             return buffer.lines().collect(Collectors.joining("\n"));
         }
     }
-
 
 }

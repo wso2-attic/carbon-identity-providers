@@ -10,8 +10,10 @@
 
 # virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
 hs_err_pid*
+
+# IDE metadata files
 .idea/
-/components/identity-provider/org.wso2.carbon.identity.provider/org.wso2.carbon.identity.provider.iml
-/components/identity-provider/org.wso2.carbon.identity.provider/target/
-components/identity-provider/org.wso2.carbon.identity.provider.common/target/
-components/identity-provider/org.wso2.carbon.identity.provider/target/
+*.iml
+
+# Build artifacts
+*/target/**
