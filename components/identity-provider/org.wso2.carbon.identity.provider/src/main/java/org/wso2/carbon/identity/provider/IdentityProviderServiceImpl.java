@@ -20,19 +20,15 @@ package org.wso2.carbon.identity.provider;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.wso2.carbon.identity.provider.common.model.AuthenticationConfig;
-import org.wso2.carbon.identity.provider.common.model.AuthenticatorConfig;
-import org.wso2.carbon.identity.provider.common.model.ClaimConfig;
 import org.wso2.carbon.identity.provider.common.model.IdPMetadata;
+import org.wso2.carbon.identity.provider.common.model.AuthenticationConfig;
 import org.wso2.carbon.identity.provider.common.model.IdentityProvider;
-import org.wso2.carbon.identity.provider.common.model.ProvisionerConfig;
 import org.wso2.carbon.identity.provider.common.model.ProvisioningConfig;
-import org.wso2.carbon.identity.provider.common.model.ResidentIdentityProvider;
-import org.wso2.carbon.identity.provider.common.model.RoleConfig;
+import org.wso2.carbon.identity.provider.dao.IdentityProviderDAO;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * Default implementation of Identity Prvider Service.
@@ -41,6 +37,11 @@ public class IdentityProviderServiceImpl implements IdentityProviderService {
 
     private static final Logger log = LoggerFactory.getLogger(IdentityProviderServiceImpl.class);
 
+    private IdentityProviderDAO identityProviderDAO;
+
+    public void setIdentityProviderDAO(IdentityProviderDAO identityProviderDAO) {
+        this.identityProviderDAO = identityProviderDAO;
+    }
 
     @Override
     public List<String> listIdentityProviders() throws IdentityProviderException {
@@ -49,7 +50,13 @@ public class IdentityProviderServiceImpl implements IdentityProviderService {
 
     @Override
     public List<String> listEnabledIdentityProviders() throws IdentityProviderException {
-        return null;
+        List<IdentityProvider> identityProviderList = identityProviderDAO.listIdentityProviders(true);
+
+        return identityProviderList.stream().map(
+                identityProvider -> identityProvider.getIdPMetadata().getName())
+                .collect(
+                    Collectors.toList()
+        );
     }
 
     @Override
@@ -64,6 +71,21 @@ public class IdentityProviderServiceImpl implements IdentityProviderService {
 
     @Override
     public IdentityProvider getIdentityProvider(String idPName) throws IdentityProviderException {
+        List<IdentityProvider> identityProviderList =  identityProviderDAO.listIdentityProviderByName(idPName);
+
+        if(identityProviderList.size() > 0) {
+            if(identityProviderList.size() >1) {
+                if(log.isDebugEnabled()) {
+                    log.debug("There was {} number of IDP match for the IDP name : {}. Returning the first one",
+                            identityProviderList.size(), idPName);
+                }
+            }
+            return identityProviderList.get(0);
+        } else {
+            if(log.isDebugEnabled()) {
+                log.debug("Could not find an IDP with name : "+idPName);
+            }
+        }
         return null;
     }
 

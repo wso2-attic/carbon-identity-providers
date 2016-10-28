@@ -74,6 +74,10 @@
 
     <dependencies>
         <dependency>
+            <groupId>org.wso2.carbon.datasources</groupId>
+            <artifactId>org.wso2.carbon.datasource.core</artifactId>
+        </dependency>
+        <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
         </dependency>
@@ -92,6 +96,7 @@
         <dependency>
             <groupId>org.wso2.carbon.identity.provider</groupId>
             <artifactId>org.wso2.carbon.identity.provider.common</artifactId>
+            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>org.testng</groupId>
@@ -108,6 +113,32 @@
             <artifactId>slf4j-log4j12</artifactId>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>org.ops4j.pax.exam</groupId>
+            <artifactId>pax-exam-testng</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.ops4j.pax.exam</groupId>
+            <artifactId>pax-exam-link-mvn</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.ops4j.pax.exam</groupId>
+            <artifactId>pax-exam-container-native</artifactId>
+            <version>4.6.0</version>
+        </dependency>
+        <dependency>
+            <groupId>javax.inject</groupId>
+            <artifactId>javax.inject</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.jetty.orbit</groupId>
+            <artifactId>javax.transaction</artifactId>
+            <version>1.1.1.v201105210645</version>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
 
@@ -121,7 +152,7 @@
         </export.package>
         <import.package>
             org.slf4j.*;version="${slf4j.version}",
-            org.wso2.carbon.identity.provider.common.*;version="6-SNAPSHOT",
+            org.wso2.carbon.identity.provider.common.*;version="${project.version}",
         </import.package>
 
         <dsannotations>*</dsannotations>
