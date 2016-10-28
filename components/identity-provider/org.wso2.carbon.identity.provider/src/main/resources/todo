@@ -61,3 +61,5 @@ users in a particular role must get provisioned. For triggering we can have a bu
 workaround have a new internal role domain called "TRIGGER_PROV" and assign users to that). For provisioning users
 who belong to particular role in 5.3.0 we can achieve that by writing some template xacml policies. Removed
 isJitEnabled as well because it didn't make sense.
+
+Removed UserIDClaimURI and RoleClaimURI because they need to come from claim-mgt component
