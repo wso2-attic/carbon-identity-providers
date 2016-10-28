@@ -16,22 +16,10 @@
  * under the License.
  */
 
-package org.wso2.carbon.identity.provider.internal;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+package org.wso2.carbon.identity.provider.dao;
 
 /**
- * @scr.component name="identity.provider.dscomponent" immediate="true"
- * @scr.reference name="identity.provider.interceptor.service"
- * interface="org.wso2.carbon.identity.provider.interceptor.IdentityProviderInterceptor
- * cardinality="0..n" policy="dynamic"
- * bind="setIdentityProviderInterceptor"
- * unbind="unsetIdentityProviderInterceptor"
+ * Wrapper class that provides caching functionality for DAO
  */
-public class IdentityProviderServiceComponent {
-
-    private static Logger log = LoggerFactory.getLogger(IdentityProviderServiceComponent.class);
-
-
+public class CacheBackedIdPDAO extends IdentityProviderDAO {
 }

@@ -20,10 +20,13 @@ package org.wso2.carbon.identity.provider;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.wso2.carbon.identity.provider.common.model.AuthenticationConfig;
 import org.wso2.carbon.identity.provider.common.model.AuthenticatorConfig;
 import org.wso2.carbon.identity.provider.common.model.ClaimConfig;
+import org.wso2.carbon.identity.provider.common.model.IdPMetadata;
 import org.wso2.carbon.identity.provider.common.model.IdentityProvider;
 import org.wso2.carbon.identity.provider.common.model.ProvisionerConfig;
+import org.wso2.carbon.identity.provider.common.model.ProvisioningConfig;
 import org.wso2.carbon.identity.provider.common.model.ResidentIdentityProvider;
 import org.wso2.carbon.identity.provider.common.model.RoleConfig;
 
@@ -38,157 +41,86 @@ public class IdentityProviderServiceImpl implements IdentityProviderService {
 
     private static final Logger log = LoggerFactory.getLogger(IdentityProviderServiceImpl.class);
 
+
     @Override
-    public ResidentIdentityProvider getResidentIdP() throws IdentityProviderException {
+    public List<String> listIdentityProviders() throws IdentityProviderException {
         return null;
     }
 
     @Override
-    public void createResidentIdP(ResidentIdentityProvider identityProvider) throws IdentityProviderException {
-
-    }
-
-    @Override
-    public void updateResidentIdP(ResidentIdentityProvider identityProvider) throws IdentityProviderException {
-
-    }
-
-    @Override
-    public void enableResidentIdP() throws IdentityProviderException {
-
-    }
-
-    @Override
-    public void disableResidentIdP() throws IdentityProviderException {
-
-    }
-
-    @Override
-    public void updateMetaIdentityProvider() throws IdentityProviderException {
-
-    }
-
-    @Override
-    public void updateAuthenticatorConfig() throws IdentityProviderException {
-
-    }
-
-    @Override
-    public void updateProvisioningConfig() throws IdentityProviderException {
-
-    }
-
-    @Override
-    public void updateProperties() throws IdentityProviderException {
-
-    }
-
-    @Override
-    public List<IdentityProvider> getIdPs(boolean includeResidentIdP) throws IdentityProviderException {
+    public List<String> listEnabledIdentityProviders() throws IdentityProviderException {
         return null;
     }
 
     @Override
-    public IdentityProvider getIdP(String idPName) throws IdentityProviderException {
+    public int createIdentityProvider(IdentityProvider identityProvider) throws IdentityProviderException {
+        return 0;
+    }
+
+    @Override
+    public IdentityProvider getIdentityProvider(int identityProviderId) throws IdentityProviderException {
         return null;
     }
 
     @Override
-    public IdentityProvider getIdP(int idPId) throws IdentityProviderException {
+    public IdentityProvider getIdentityProvider(String idPName) throws IdentityProviderException {
         return null;
     }
 
     @Override
-    public List<IdentityProvider> getEnabledIdPs(String tenantDomain) throws IdentityProviderException {
+    public IdentityProvider getIdPByProperty(String name, Object value) throws IdentityProviderException {
         return null;
     }
 
     @Override
-    public IdentityProvider getEnabledIdPByName(String idPName) throws IdentityProviderException {
+    public IdentityProvider getIdPByAuthenticatorProperty(String name, Object value) throws IdentityProviderException {
         return null;
     }
 
     @Override
-    public IdentityProvider getIdPByName(String idPName) throws IdentityProviderException {
+    public IdentityProvider getIdPByProvisionerProperty(String name, Object value) throws IdentityProviderException {
         return null;
     }
 
     @Override
-    public IdentityProvider getIdPByAuthenticatorPropertyValue(String name, String value)
+    public void updateIdentityProvider(IdentityProvider identityProvider) throws IdentityProviderException {
+
+    }
+
+    @Override
+    public void deleteIdentityProvider(int identityProviderId) throws IdentityProviderException {
+
+    }
+
+    @Override
+    public void enableIdentityProvider(int identityProviderId) throws IdentityProviderException {
+
+    }
+
+    @Override
+    public void disableIdentityProvider(int identityProviderId) throws IdentityProviderException {
+
+    }
+
+    @Override
+    public void updateIdPMetadata(int identityProviderId, IdPMetadata metadata) throws IdentityProviderException {
+
+    }
+
+    @Override
+    public void updateIdPAuthenticationConfig(int identityProviderId, AuthenticationConfig authenticationConfig)
             throws IdentityProviderException {
-        return null;
+
     }
 
     @Override
-    public Set<ClaimConfig> getMappedLocalClaims(String idPName, List<String> idPClaimURIs)
+    public void updateIdPProvisioningConfig(int identityProviderId, ProvisioningConfig provisioningConfig)
             throws IdentityProviderException {
-        return null;
-    }
-
-    @Override
-    public Map<String, String> getMappedLocalClaimsMap(String idPName, String tenantDomain, List<String> idPClaimURIs)
-            throws IdentityProviderException {
-        return null;
-    }
-
-    @Override
-    public Set<ClaimConfig> getMappedIdPClaims(String idPName, String tenantDomain, List<String> localClaimURIs)
-            throws IdentityProviderException {
-        return null;
-    }
-
-    @Override
-    public Map<String, String> getMappedIdPClaimsMap(String idPName, String tenantDomain, List<String> localClaimURIs)
-            throws IdentityProviderException {
-        return null;
-    }
-
-    @Override
-    public Set<RoleConfig> getMappedLocalRoles(String idPName, String tenantDomain, String[] idPRoles)
-            throws IdentityProviderException {
-        return null;
-    }
-
-    @Override
-    public Map<String, RoleConfig> getMappedLocalRolesMap(String idPName, String tenantDomain, String[] idPRoles)
-            throws IdentityProviderException {
-        return null;
-    }
-
-    @Override
-    public Set<RoleConfig> getMappedIdPRoles(String idPName, String tenantDomain, RoleConfig[] localRoles)
-            throws IdentityProviderException {
-        return null;
-    }
-
-    @Override
-    public Map<RoleConfig, String> getMappedIdPRolesMap(String idPName, String tenantDomain, RoleConfig[] localRoles)
-            throws IdentityProviderException {
-        return null;
-    }
-
-    @Override
-    public void createIdP(IdentityProvider identityProvider) throws IdentityProviderException {
 
     }
 
     @Override
-    public void deleteIdP(String idPName) throws IdentityProviderException {
+    public void updateIdPProperties(int identityProviderId, Map properties) throws IdentityProviderException {
 
-    }
-
-    @Override
-    public void updateIdP(String oldIdPName, IdentityProvider newIdentityProvider) throws IdentityProviderException {
-
-    }
-
-    @Override
-    public AuthenticatorConfig[] getAllFederatedAuthenticators() throws IdentityProviderException {
-        return new AuthenticatorConfig[0];
-    }
-
-    @Override
-    public ProvisionerConfig[] getAllProvisioningConnectors() throws IdentityProviderException {
-        return new ProvisionerConfig[0];
     }
 }
