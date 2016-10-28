@@ -1,38 +1,38 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  ~ Copyright (c) 2015, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+  ~ Copyright (c) 2016, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
   ~
-  ~  WSO2 Inc. licenses this file to you under the Apache License,
-  ~  Version 2.0 (the "License"); you may not use this file except
-  ~  in compliance with the License.
-  ~  You may obtain a copy of the License at
+  ~ WSO2 Inc. licenses this file to you under the Apache License,
+  ~ Version 2.0 (the "License"); you may not use this file except
+  ~ in compliance with the License.
+  ~ You may obtain a copy of the License at
   ~
-  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~ http://www.apache.org/licenses/LICENSE-2.0
   ~
-  ~  Unless required by applicable law or agreed to in writing,
-  ~  software distributed under the License is distributed on an
-  ~  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
-  ~  KIND, either express or implied.  See the License for the
-  ~  specific language governing permissions and limitations
-  ~  under the License.
+  ~ Unless required by applicable law or agreed to in writing,
+  ~ software distributed under the License is distributed on an
+  ~ "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  ~ KIND, either express or implied.  See the License for the
+  ~ specific language governing permissions and limitations
+  ~ under the License.
   -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
     <parent>
-        <groupId>org.wso2.carbon.identity.provider</groupId>
-        <artifactId>identity-provider</artifactId>
+        <groupId>org.wso2.is</groupId>
+        <artifactId>org.wso2.carbon.identity</artifactId>
         <version>6.0.0-SNAPSHOT</version>
-        <relativePath>../pom.xml</relativePath>
+        <relativePath>../../pom.xml</relativePath>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>org.wso2.carbon.identity.provider</artifactId>
+    <artifactId>org.wso2.carbon.identity.provider.osgi-tests</artifactId>
 
     <packaging>bundle</packaging>
-    <name>WSO2 Carbon - Identity Provider BE Bundle</name>
+    <name>WSO2 Carbon - Identity Provider OSGI Tests</name>
     <description>
-        This is a WSO2 Carbon bundle that provides the Identity Provider backend functionality.
+        OSGI tests for the WSO2 Carbon bundle that provides the Identity Provider backend functionality.
     </description>
     <url>http://wso2.org</url>
     <organization>
@@ -113,20 +113,47 @@
             <artifactId>slf4j-log4j12</artifactId>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>org.ops4j.pax.exam</groupId>
+            <artifactId>pax-exam-testng</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.ops4j.pax.exam</groupId>
+            <artifactId>pax-exam-link-mvn</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.ops4j.pax.exam</groupId>
+            <artifactId>pax-exam-container-native</artifactId>
+            <version>4.6.0</version>
+        </dependency>
+        <dependency>
+            <groupId>javax.inject</groupId>
+            <artifactId>javax.inject</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.jetty.orbit</groupId>
+            <artifactId>javax.transaction</artifactId>
+            <version>1.1.1.v201105210645</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>apache-collections</groupId>
+            <artifactId>commons-collections</artifactId>
+        </dependency>
     </dependencies>
 
 
     <properties>
         <mavan.findbugsplugin.exclude.file>findbugs-exclude.xml</mavan.findbugsplugin.exclude.file>
         <maven.checkstyleplugin.excludes>org/wso2/carbon/identity/**/*</maven.checkstyleplugin.excludes>
-        <private.package>org.wso2.carbon.identity.provider.internal</private.package>
-        <export.package>
-            !org.wso2.carbon.identity.provider.internal,
-            org.wso2.carbon.identity.provider.*
-        </export.package>
+        <export.package></export.package>
         <import.package>
             org.slf4j.*;version="${slf4j.version}",
-            org.wso2.carbon.identity.provider.common.model.*;version="${project.version}",
+            org.wso2.carbon.identity.provider.common.*;version="${project.version}",
+            org.wso2.carbon.identity.provider.*;version="${project.version}",
         </import.package>
 
         <dsannotations>*</dsannotations>
