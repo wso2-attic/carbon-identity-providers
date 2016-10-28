@@ -38,6 +38,7 @@
 
     <modules>
         <module>components/identity-provider</module>
+        <!--<module>tests/osgi-tests</module>-->
     </modules>
 
     <dependencyManagement>
@@ -67,6 +68,16 @@
                 <groupId>com.h2database.wso2</groupId>
                 <artifactId>h2-database-engine</artifactId>
                 <version>${orbit.version.h2.engine}</version>
+            </dependency>
+            <dependency>
+                <groupId>apache-collections</groupId>
+                <artifactId>commons-collections</artifactId>
+                <version>${commons-collections.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.commons</groupId>
+                <artifactId>commons-lang3</artifactId>
+                <version>${commons-lang3.version}</version>
             </dependency>
             <!--Carbon Dependencies-->
             <dependency>
@@ -165,7 +176,10 @@
         <osgi.framework.import.version.range>[1.8.0, 2.0.0)</osgi.framework.import.version.range>
         <slf4j.import.version.range>[1.7.1, 2.0.0)</slf4j.import.version.range>
         <slf4j.version>1.7.5</slf4j.version>
-        <commons-lang.version>2.1</commons-lang.version>
+        <commons-lang3.version>3.4</commons-lang3.version>
+        <commons-lang3.import.version.range>(3.4, 3.5]</commons-lang3.import.version.range>
+        <commons-collections.version>3.1</commons-collections.version>
+        <commons-collections.import.version.range>(3.1,3.2]</commons-collections.import.version.range>
 
         <orbit.version.h2.engine>1.2.140.wso2v3</orbit.version.h2.engine>
         <slf4j.api.version>1.7.12</slf4j.api.version>
