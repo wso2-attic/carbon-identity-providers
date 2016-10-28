@@ -27,17 +27,18 @@ import java.util.Map;
 /**
  * Representation of meta information of an Identity Provider.
  */
-public class MetaIdentityProvider implements Serializable {
+public class IdPMetadata implements Serializable {
 
     private static final long serialVersionUID = -4977395047974321120L;
 
-    private int identityProviderId;
+    private int id;
     private String name;
-    private String displayName;
+    private String displayLabel;
     private String description;
 
     // idp:cert -> 1..n
     // certs must be managed in keystore component
+    // Map<certId,certAlias>
     private Map<String, String> certMap;
 
     // Do we need to have ClaimConfig object? Or can we directly store the claimDialectURI? UserId and RoleID will be
@@ -46,30 +47,30 @@ public class MetaIdentityProvider implements Serializable {
 
     private RoleConfig roleConfig;
 
-    private MetaIdentityProvider() {
+    private IdPMetadata() {
 
     }
 
-    private MetaIdentityProvider(MetaIdentityProviderBuilder builder) {
-        this.identityProviderId = builder.identityProviderId;
+    private IdPMetadata(IdPMetadataBuilder builder) {
+        this.id = builder.id;
         this.name = builder.name;
-        this.displayName = builder.displayName;
+        this.displayLabel = builder.displayName;
         this.description = builder.description;
         this.certMap = builder.certMap;
         this.claimConfig = builder.claimConfigBuilder.build();
         this.roleConfig = builder.roleConfigBuilder.build();
     }
 
-    public int getIdentityProviderId() {
-        return identityProviderId;
+    public int getId() {
+        return id;
     }
 
     public String getName() {
         return name;
     }
 
-    public String getDisplayName() {
-        return displayName;
+    public String getDisplayLabel() {
+        return displayLabel;
     }
 
     public String getDescription() {
@@ -89,16 +90,16 @@ public class MetaIdentityProvider implements Serializable {
     }
 
 
-    public static MetaIdentityProviderBuilder newBuilder(int identityProviderId, String name) {
-        return new MetaIdentityProviderBuilder(identityProviderId, name);
+    public static IdPMetadataBuilder newBuilder(int identityProviderId, String name) {
+        return new IdPMetadataBuilder(identityProviderId, name);
     }
 
     /**
      * Builder class for meta representation of an identity provider.
      */
-    public static class MetaIdentityProviderBuilder {
+    public static class IdPMetadataBuilder {
 
-        private int identityProviderId;
+        private int id;
         private String name;
         private String displayName;
         private String description;
@@ -106,8 +107,8 @@ public class MetaIdentityProvider implements Serializable {
         private ClaimConfig.ClaimConfigBuilder claimConfigBuilder;
         private RoleConfig.RoleConfigBuilder roleConfigBuilder = new RoleConfig.RoleConfigBuilder();
 
-        public MetaIdentityProviderBuilder(int identityProviderId, String name) {
-            this.identityProviderId = identityProviderId;
+        public IdPMetadataBuilder(int id, String name) {
+            this.id = id;
             if (StringUtils.isNoneBlank(name)) {
                 this.name = name;
             } else {
@@ -115,17 +116,17 @@ public class MetaIdentityProvider implements Serializable {
             }
         }
 
-        public MetaIdentityProviderBuilder setDisplayName(String displayName) {
+        public IdPMetadataBuilder setDisplayName(String displayName) {
             this.displayName = displayName;
             return this;
         }
 
-        public MetaIdentityProviderBuilder setDescription(String description) {
+        public IdPMetadataBuilder setDescription(String description) {
             this.description = description;
             return this;
         }
 
-        public MetaIdentityProviderBuilder setCerts(Map<String, String> certMap) {
+        public IdPMetadataBuilder setCerts(Map<String, String> certMap) {
             if (!certMap.isEmpty()) {
                 this.certMap.clear();
                 this.certMap.putAll(certMap);
@@ -133,42 +134,42 @@ public class MetaIdentityProvider implements Serializable {
             return this;
         }
 
-        public MetaIdentityProviderBuilder addCert(String alias, String thumbPrint) {
+        public IdPMetadataBuilder addCert(String alias, String thumbPrint) {
             if (StringUtils.isNotBlank(alias) && StringUtils.isNotBlank(thumbPrint)) {
                 this.certMap.put(alias, thumbPrint);
             }
             return this;
         }
 
-        public MetaIdentityProviderBuilder addCerts(Map<String, String> certMap) {
+        public IdPMetadataBuilder addCerts(Map<String, String> certMap) {
             if (!certMap.isEmpty()) {
                 this.certMap.putAll(certMap);
             }
             return this;
         }
 
-        public MetaIdentityProviderBuilder setDialect(String dialect) {
+        public IdPMetadataBuilder setDialect(String dialect) {
             this.claimConfigBuilder = new ClaimConfig.ClaimConfigBuilder(dialect);
             return this;
         }
 
-        public MetaIdentityProviderBuilder setRoleMappings(Map<String, String> roleMap) {
+        public IdPMetadataBuilder setRoleMappings(Map<String, String> roleMap) {
             this.roleConfigBuilder.setRoleMappings(roleMap);
             return this;
         }
 
-        public MetaIdentityProviderBuilder addRoleMapping(String role1, String role2) {
+        public IdPMetadataBuilder addRoleMapping(String role1, String role2) {
             this.roleConfigBuilder.addRoleMapping(role1, role2);
             return this;
         }
 
-        public MetaIdentityProviderBuilder addRoleMappings(Map<String, String> roleMap) {
+        public IdPMetadataBuilder addRoleMappings(Map<String, String> roleMap) {
             this.roleConfigBuilder.addRoleMappings(roleMap);
             return this;
         }
 
-        public MetaIdentityProvider build() {
-            MetaIdentityProvider result = new MetaIdentityProvider(this);
+        public IdPMetadata build() {
+            IdPMetadata result = new IdPMetadata(this);
 
             return result;
         }

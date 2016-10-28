@@ -45,15 +45,11 @@ public class RoleConfig implements Serializable {
     /**
      * Builds the role configuration with the given mappings.
      */
-    public static class RoleConfigBuilder {
+    static class RoleConfigBuilder {
 
         private Map<String, String> roleMapping = new HashMap<String, String>();
 
-        public RoleConfig build() {
-            return new RoleConfig(this);
-        }
-
-        public RoleConfigBuilder setRoleMappings(Map<String, String> roleMap) {
+        RoleConfigBuilder setRoleMappings(Map<String, String> roleMap) {
             if (!roleMap.isEmpty()) {
                 this.roleMapping.clear();
                 this.roleMapping.putAll(roleMap);
@@ -61,18 +57,22 @@ public class RoleConfig implements Serializable {
             return this;
         }
 
-        public RoleConfigBuilder addRoleMapping(String role1, String role2) {
+        RoleConfigBuilder addRoleMapping(String role1, String role2) {
             if (StringUtils.isNotBlank(role1) && StringUtils.isNotBlank(role2)) {
                 this.roleMapping.put(role1, role2);
             }
             return this;
         }
 
-        public RoleConfigBuilder addRoleMappings(Map<String, String> roleMap) {
+        RoleConfigBuilder addRoleMappings(Map<String, String> roleMap) {
             if (!roleMap.isEmpty()) {
                 this.roleMapping.putAll(roleMap);
             }
             return this;
+        }
+
+        RoleConfig build() {
+            return new RoleConfig(this);
         }
     }
 }

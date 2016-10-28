@@ -19,10 +19,14 @@
 package org.wso2.carbon.identity.provider.common.model;
 
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections.MapUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import java.io.Serializable;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 
 /**
  * Abstract representation of an Identity Provider
@@ -32,18 +36,18 @@ public abstract class IdentityProvider implements Serializable {
     private static final long serialVersionUID = 690422066395820761L;
 
     private boolean isEnabled;
-    protected final MetaIdentityProvider metaIdentityProvider;
+    private final IdPMetadata idPMetadata;
     private ProvisioningConfig provisioningConfig;
-    private AuthenticatorConfig authenticatorConfig;
-    private Collection<IdentityProviderProperty> properties = new HashSet<IdentityProviderProperty>();
+    private AuthenticationConfig authenticationConfig;
+    private Map<String,Object> properties = new HashMap<>();
 
-    protected IdentityProvider(IdentityProviderBuilder builder) {
+    IdentityProvider(IdentityProviderBuilder builder) {
         this.isEnabled = builder.isEnabled;
-        this.metaIdentityProvider = builder.metaIdentityProvider;
+        this.idPMetadata = builder.idPMetadataBuilder.build();
         this.provisioningConfig =
                 builder.provisioningConfigBuilder != null ? builder.provisioningConfigBuilder.build() : null;
-        this.authenticatorConfig =
-                builder.authenticatorConfigBuilder != null ? builder.authenticatorConfigBuilder.build() : null;
+        this.authenticationConfig =
+                builder.authenticationConfigBuilder != null ? builder.authenticationConfigBuilder.build() : null;
         this.properties = builder.properties;
     }
 
@@ -51,25 +55,23 @@ public abstract class IdentityProvider implements Serializable {
         return isEnabled;
     }
 
-    public MetaIdentityProvider getMetaIdentityProvider() {
-        return metaIdentityProvider;
+    public IdPMetadata getIdPMetadata() {
+        return idPMetadata;
     }
-
-    void setMetaIdentityProvider(MetaIdentityProvider metaIdentityProvider) {}
 
     public ProvisioningConfig getProvisioningConfig() {
         return provisioningConfig;
     }
 
-    public AuthenticatorConfig getAuthenticatorConfig() {
-        return authenticatorConfig;
+    public AuthenticationConfig getAuthenticationConfig() {
+        return authenticationConfig;
     }
 
     // provisioning filter must go under JIT and Outbound provisioning configs
     // Prov. filter is a example to have multiple values for one IDP based on SP
 
-    public Collection<IdentityProviderProperty> getProperties() {
-        return CollectionUtils.unmodifiableCollection(properties);
+    public Map<String,Object> getProperties() {
+        return MapUtils.unmodifiableMap(properties);
     }
 
     /**
@@ -79,14 +81,14 @@ public abstract class IdentityProvider implements Serializable {
     public static abstract class IdentityProviderBuilder {
 
         private boolean isEnabled = true;
-        private MetaIdentityProvider metaIdentityProvider;
+        private IdPMetadata.IdPMetadataBuilder idPMetadataBuilder;
         private ProvisioningConfig.ProvisioningConfigBuilder provisioningConfigBuilder =
                 new ProvisioningConfig.ProvisioningConfigBuilder();
-        private AuthenticatorConfig.AuthenticatorConfigBuilder authenticatorConfigBuilder;
-        private Collection<IdentityProviderProperty> properties = new HashSet<IdentityProviderProperty>();
+        private AuthenticationConfig.AuthenticationConfigBuilder authenticationConfigBuilder;
+        private Map<String,Object> properties = new HashMap<>();
 
-        protected IdentityProviderBuilder(MetaIdentityProvider metaIdentityProvider) {
-            this.metaIdentityProvider = metaIdentityProvider;
+        public IdentityProviderBuilder(int id, String name) {
+            this.idPMetadataBuilder = new IdPMetadata.IdPMetadataBuilder(id, name);
         }
 
         public IdentityProviderBuilder setEnabled(boolean isEnabled) {
@@ -94,8 +96,48 @@ public abstract class IdentityProvider implements Serializable {
             return this;
         }
 
-        public IdentityProviderBuilder setMetaIdentityProvider(MetaIdentityProvider metaIdentityProvider) {
-            this.metaIdentityProvider = metaIdentityProvider;
+        public IdentityProviderBuilder setDisplayName(String displayName) {
+            this.idPMetadataBuilder.setDisplayName(displayName);
+            return this;
+        }
+
+        public IdentityProviderBuilder setDescription(String description) {
+            this.idPMetadataBuilder.setDescription(description);
+            return this;
+        }
+
+        public IdentityProviderBuilder setCerts(Map<String, String> certMap) {
+            this.idPMetadataBuilder.setCerts(certMap);
+            return this;
+        }
+
+        public IdentityProviderBuilder addCert(String alias, String thumbPrint) {
+            this.idPMetadataBuilder.addCert(alias, thumbPrint);
+            return this;
+        }
+
+        public IdentityProviderBuilder addCerts(Map<String, String> certMap) {
+            this.idPMetadataBuilder.addCerts(certMap);
+            return this;
+        }
+
+        public IdentityProviderBuilder setDialect(String dialect) {
+            this.idPMetadataBuilder.setDialect(dialect);
+            return this;
+        }
+
+        public IdentityProviderBuilder setRoleMappings(Map<String, String> roleMap) {
+            this.idPMetadataBuilder.setRoleMappings(roleMap);
+            return this;
+        }
+
+        public IdentityProviderBuilder addRoleMapping(String role1, String role2) {
+            this.idPMetadataBuilder.addRoleMapping(role1, role2);
+            return this;
+        }
+
+        public IdentityProviderBuilder addRoleMappings(Map<String, String> roleMap) {
+            this.idPMetadataBuilder.addRoleMappings(roleMap);
             return this;
         }
 
@@ -144,46 +186,54 @@ public abstract class IdentityProvider implements Serializable {
             return this;
         }
 
-        public IdentityProviderBuilder setAuthenticatorEnabled(boolean isEnabled) {
-            this.authenticatorConfigBuilder.setEnabled(isEnabled);
+        public IdentityProviderBuilder setRequestedClaims(Collection<String> requestedClaims) {
+            this.authenticationConfigBuilder.setRequestedClaims(requestedClaims);
             return this;
         }
 
-        public IdentityProviderBuilder setAuthenticatorProperties(
-                Collection<IdentityConnectorProperty> properties) {
-            this.authenticatorConfigBuilder.setProperties(properties);
+        public IdentityProviderBuilder addRequestedClaim(String requestedClaim) {
+            this.authenticationConfigBuilder.addRequestedClaim(requestedClaim);
             return this;
         }
 
-        public IdentityProviderBuilder addAuthenticatorProperty(IdentityConnectorProperty property) {
-            this.authenticatorConfigBuilder.addProperty(property);
+        public IdentityProviderBuilder addRequestedClaims(Collection<String> requestedClaims) {
+            this.authenticationConfigBuilder.addRequestedClaims(requestedClaims);
             return this;
         }
 
-        public IdentityProviderBuilder addAuthenticatorProperties(
-                Collection<IdentityConnectorProperty> properties) {
-            this.authenticatorConfigBuilder.addProperties(properties);
+        public IdentityProviderBuilder setAuthenticators(Collection<AuthenticatorConfig> authenticators) {
+            this.authenticationConfigBuilder.setAuthenticators(authenticators);
             return this;
         }
 
-        public IdentityProviderBuilder setIdentityProviderProperties(Collection<IdentityProviderProperty> properties) {
+        public IdentityProviderBuilder addAuthenticator(AuthenticatorConfig authenticator) {
+            this.authenticationConfigBuilder.addAuthenticator(authenticator);
+            return this;
+        }
+
+        public IdentityProviderBuilder addAuthenticators(Collection<AuthenticatorConfig> authenticators) {
+            this.authenticationConfigBuilder.addAuthenticators(authenticators);
+            return this;
+        }
+
+        public IdentityProviderBuilder setIdentityProviderProperties(Map<String,Object> properties) {
             if (!properties.isEmpty()) {
                 this.properties.clear();
-                this.properties.addAll(properties);
+                this.properties.putAll(properties);
             }
             return this;
         }
 
-        public IdentityProviderBuilder addIdentityProviderProperty(IdentityProviderProperty property) {
-            if (property != null) {
-                properties.add(property);
+        public IdentityProviderBuilder addIdentityProviderProperty(String name, Object value) {
+            if (StringUtils.isNotBlank(name) && value != null) {
+                properties.put(name, value);
             }
             return this;
         }
 
-        public IdentityProviderBuilder addIdentityProviderProperties(Collection<IdentityProviderProperty> properties) {
+        public IdentityProviderBuilder addIdentityProviderProperties(Map<String,Object> properties) {
             if (!properties.isEmpty()) {
-                properties.addAll(properties);
+                properties.putAll(properties);
             }
             return this;
         }

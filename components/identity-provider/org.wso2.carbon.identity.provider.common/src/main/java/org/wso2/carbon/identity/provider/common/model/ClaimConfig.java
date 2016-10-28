@@ -43,11 +43,11 @@ public class ClaimConfig implements Serializable {
     /**
      * Builds the claim configuration to be used by the IDPs.
      */
-    public static class ClaimConfigBuilder {
+    static class ClaimConfigBuilder {
 
         private String dialect;
 
-        public ClaimConfigBuilder(String dialect) {
+        ClaimConfigBuilder(String dialect) {
             if (StringUtils.isNoneBlank(dialect)) {
                 this.dialect = dialect;
             } else {
@@ -55,7 +55,7 @@ public class ClaimConfig implements Serializable {
             }
         }
 
-        public ClaimConfig build() {
+        ClaimConfig build() {
             return new ClaimConfig(this);
         }
     }

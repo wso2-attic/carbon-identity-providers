@@ -24,20 +24,14 @@ package org.wso2.carbon.identity.provider.common.model;
 public class ProvisioningClaim {
 
     private int claimId;
-    private DataType dataType;
     private Object defaultValue;
 
     private ProvisioningClaim(ProvisioningClaimBuilder builder) {
         this.claimId = builder.claim;
-        this.dataType = builder.dataType;
     }
 
     public int getClaimId() {
         return claimId;
-    }
-
-    public DataType getDataType() {
-        return dataType;
     }
 
     public Object getDefaultValue() {
@@ -50,12 +44,10 @@ public class ProvisioningClaim {
     protected static class ProvisioningClaimBuilder {
 
         private int claim;
-        private DataType dataType;
         private Object defaultValue;
 
-        public ProvisioningClaimBuilder(int claim, DataType dataType) {
+        public ProvisioningClaimBuilder(int claim) {
             this.claim = claim;
-            this.dataType = dataType;
         }
 
         public ProvisioningClaimBuilder setDefaultValue(Object defaultValue) {

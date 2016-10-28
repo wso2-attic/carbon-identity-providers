@@ -22,7 +22,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.wso2.carbon.identity.provider.IdentityProviderException;
 import org.wso2.carbon.identity.provider.common.model.IdentityProvider;
-import org.wso2.carbon.identity.provider.common.model.MetaIdentityProvider;
+import org.wso2.carbon.identity.provider.common.model.IdPMetadata;
 import org.wso2.carbon.identity.provider.common.model.ResidentIdentityProvider;
 
 import java.util.List;
@@ -48,10 +48,10 @@ public class IdentityProviderDAO {
         final String INSERT_IDP_SQL = "INSERT INTO IDP (NAME, DISPLAY_NAME, DESCRIPTION) " + "VALUES(?,?,?)";
 
         this.jdbcTemplate.executeUpdate(INSERT_IDP_SQL, (preparedStatement, bean) -> {
-            MetaIdentityProvider metaIdentityProvider = identityProvider.getMetaIdentityProvider();
-            preparedStatement.setString(1, metaIdentityProvider.getName());
-            preparedStatement.setString(2, metaIdentityProvider.getDisplayName());
-            preparedStatement.setString(3, metaIdentityProvider.getDescription());
+            IdPMetadata idPMetadata = identityProvider.getIdPMetadata();
+            preparedStatement.setString(1, idPMetadata.getName());
+            preparedStatement.setString(2, idPMetadata.getDisplayLabel());
+            preparedStatement.setString(3, idPMetadata.getDescription());
 
         }, identityProvider);
     }
@@ -68,9 +68,9 @@ public class IdentityProviderDAO {
         List<IdentityProvider> idps = this.jdbcTemplate.executeQuery(GET_ALL_IDP_SQL, (resultSet, rowNumber) -> {
             IdentityProvider.IdentityProviderBuilder identityProviderBuilder = ResidentIdentityProvider
                     .newBuilder(null);
-            MetaIdentityProvider.MetaIdentityProviderBuilder metaIdentityProviderBuilder = MetaIdentityProvider
+            IdPMetadata.IdPMetadataBuilder idPMetadataBuilder = IdPMetadata
                     .newBuilder(resultSet.getInt("ID"), resultSet.getString("NAME")).setDialect("wso2");
-            identityProviderBuilder.setMetaIdentityProvider(metaIdentityProviderBuilder.build());
+            identityProviderBuilder.setIdPMetadata(idPMetadataBuilder.build());
 
             return identityProviderBuilder.build();
         });
