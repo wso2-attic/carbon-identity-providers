@@ -44,7 +44,7 @@ public class IdentityProviderDAO {
      * @param identityProvider The IdP to be added.
      * @throws IdentityProviderException when any database level exception occurs.
      */
-    public void addIdentityProvider(IdentityProvider identityProvider) throws IdentityProviderException {
+    public void createIdentityProvider(IdentityProvider identityProvider) throws IdentityProviderException {
         final String INSERT_IDP_SQL = "INSERT INTO IDP (NAME, DISPLAY_NAME, DESCRIPTION) " + "VALUES(?,?,?)";
 
         this.jdbcTemplate.executeUpdate(INSERT_IDP_SQL, (preparedStatement, bean) -> {
@@ -60,17 +60,16 @@ public class IdentityProviderDAO {
      * @return
      * @throws IdentityProviderException
      */
-    public List<IdentityProvider> getAllIdentityProviders() throws IdentityProviderException {
+    public List<IdentityProvider> listIdentityProviders() throws IdentityProviderException {
 
         final String GET_ALL_IDP_SQL = "SELECT ID, NAME, DISPLAY_NAME, DESCRIPTION, "
                 + "IS_FEDERATION_HUB, IS_LOCAL_CLAIM_DIALECT, IS_ENABLED, ID FROM IDP";
 
         List<IdentityProvider> idps = this.jdbcTemplate.executeQuery(GET_ALL_IDP_SQL, (resultSet, rowNumber) -> {
             IdentityProvider.IdentityProviderBuilder identityProviderBuilder = ResidentIdentityProvider
-                    .newBuilder(null);
-            IdPMetadata.IdPMetadataBuilder idPMetadataBuilder = IdPMetadata
-                    .newBuilder(resultSet.getInt("ID"), resultSet.getString("NAME")).setDialect("wso2");
-            identityProviderBuilder.setIdPMetadata(idPMetadataBuilder.build());
+                    .newBuilder(resultSet.getInt("ID"), resultSet.getString("NAME"));
+            identityProviderBuilder.setDialectId(1);
+            identityProviderBuilder.build();
 
             return identityProviderBuilder.build();
         });

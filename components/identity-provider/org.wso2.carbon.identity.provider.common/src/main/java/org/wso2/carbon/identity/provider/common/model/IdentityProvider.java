@@ -18,14 +18,12 @@
 
 package org.wso2.carbon.identity.provider.common.model;
 
-import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
 
 /**
@@ -37,8 +35,8 @@ public abstract class IdentityProvider implements Serializable {
 
     private boolean isEnabled;
     private final IdPMetadata idPMetadata;
-    private ProvisioningConfig provisioningConfig;
     private AuthenticationConfig authenticationConfig;
+    private ProvisioningConfig provisioningConfig;
     private Map<String,Object> properties = new HashMap<>();
 
     IdentityProvider(IdentityProviderBuilder builder) {
@@ -91,13 +89,17 @@ public abstract class IdentityProvider implements Serializable {
             this.idPMetadataBuilder = new IdPMetadata.IdPMetadataBuilder(id, name);
         }
 
+        public IdentityProviderBuilder(String name) {
+            this.idPMetadataBuilder = new IdPMetadata.IdPMetadataBuilder(name);
+        }
+
         public IdentityProviderBuilder setEnabled(boolean isEnabled) {
             this.isEnabled = isEnabled;
             return this;
         }
 
-        public IdentityProviderBuilder setDisplayName(String displayName) {
-            this.idPMetadataBuilder.setDisplayName(displayName);
+        public IdentityProviderBuilder setDisplayLabel(String displayName) {
+            this.idPMetadataBuilder.setDisplayLabel(displayName);
             return this;
         }
 
@@ -121,22 +123,22 @@ public abstract class IdentityProvider implements Serializable {
             return this;
         }
 
-        public IdentityProviderBuilder setDialect(String dialect) {
-            this.idPMetadataBuilder.setDialect(dialect);
+        public IdentityProviderBuilder setDialectId(int dialectId) {
+            this.idPMetadataBuilder.setDialectId(dialectId);
             return this;
         }
 
-        public IdentityProviderBuilder setRoleMappings(Map<String, String> roleMap) {
+        public IdentityProviderBuilder setRoleMappings(Map<Integer, String> roleMap) {
             this.idPMetadataBuilder.setRoleMappings(roleMap);
             return this;
         }
 
-        public IdentityProviderBuilder addRoleMapping(String role1, String role2) {
-            this.idPMetadataBuilder.addRoleMapping(role1, role2);
+        public IdentityProviderBuilder addRoleMapping(int localRoleId, String role2) {
+            this.idPMetadataBuilder.addRoleMapping(localRoleId, role2);
             return this;
         }
 
-        public IdentityProviderBuilder addRoleMappings(Map<String, String> roleMap) {
+        public IdentityProviderBuilder addRoleMappings(Map<Integer, String> roleMap) {
             this.idPMetadataBuilder.addRoleMappings(roleMap);
             return this;
         }

@@ -87,14 +87,14 @@ public class IdPMetadata implements Serializable {
     }
 
 
-    public static IdPMetadataBuilder newBuilder(int identityProviderId, String name) {
+    static IdPMetadataBuilder newBuilder(int identityProviderId, String name) {
         return new IdPMetadataBuilder(identityProviderId, name);
     }
 
     /**
      * Builder class for meta representation of an identity provider.
      */
-    public static class IdPMetadataBuilder {
+    static class IdPMetadataBuilder {
 
         private int id;
         private String name;
@@ -113,7 +113,15 @@ public class IdPMetadata implements Serializable {
             }
         }
 
-        public IdPMetadataBuilder setDisplayName(String displayName) {
+        public IdPMetadataBuilder(String name) {
+            if (StringUtils.isNoneBlank(name)) {
+                this.name = name;
+            } else {
+                throw new IllegalArgumentException("Invalid Identity Provider name: " + name);
+            }
+        }
+
+        public IdPMetadataBuilder setDisplayLabel(String displayName) {
             this.displayName = displayName;
             return this;
         }
@@ -145,7 +153,7 @@ public class IdPMetadata implements Serializable {
             return this;
         }
 
-        public IdPMetadataBuilder setDialect(int dialectId) {
+        public IdPMetadataBuilder setDialectId(int dialectId) {
             this.claimConfigBuilder = new ClaimConfig.ClaimConfigBuilder(dialectId);
             return this;
         }

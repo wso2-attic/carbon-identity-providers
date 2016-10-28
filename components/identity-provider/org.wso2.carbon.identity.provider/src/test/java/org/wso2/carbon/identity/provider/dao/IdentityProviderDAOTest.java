@@ -21,7 +21,6 @@ package org.wso2.carbon.identity.provider.dao;
 import org.h2.jdbcx.JdbcConnectionPool;
 import org.testng.annotations.Test;
 import org.wso2.carbon.identity.provider.common.model.IdentityProvider;
-import org.wso2.carbon.identity.provider.common.model.IdPMetadata;
 import org.wso2.carbon.identity.provider.common.model.ResidentIdentityProvider;
 
 import javax.sql.DataSource;
@@ -48,7 +47,7 @@ public class IdentityProviderDAOTest {
 
         jdbcTemplate.executeUpdate("INSERT INTO IDP (NAME, DISPLAY_NAME, DESCRIPTION) "
                 + "VALUES ('No Name', 'No Name', 'No Name')");
-        List<IdentityProvider> identityProviderList = identityProviderDAO.getAllIdentityProviders();
+        List<IdentityProvider> identityProviderList = identityProviderDAO.listIdentityProviders();
         assertNotNull(identityProviderList, "The identity Providers shuld not be null");
         assertEquals(identityProviderList.size(), 1);
 
@@ -62,20 +61,19 @@ public class IdentityProviderDAOTest {
 
         IdentityProvider identityProvider = createIdentityProvider("Test Name", "Test Label", "Test Desc");
 
-        List<IdentityProvider> identityProviderList = identityProviderDAO.getAllIdentityProviders();
+        List<IdentityProvider> identityProviderList = identityProviderDAO.listIdentityProviders();
         assertEquals(identityProviderList.size(), 0, "There are not IdP initially");
 
-        identityProviderDAO.addIdentityProvider(identityProvider);
-        identityProviderList = identityProviderDAO.getAllIdentityProviders();
+        identityProviderDAO.createIdentityProvider(identityProvider);
+        identityProviderList = identityProviderDAO.listIdentityProviders();
         assertEquals(identityProviderList.size(), 1, "There should be on IdP after adding");
     }
 
     private IdentityProvider createIdentityProvider(String name, String label, String description) {
         IdentityProvider.IdentityProviderBuilder identityProviderBuilder = ResidentIdentityProvider
-                .newBuilder(null);
-        IdPMetadata.IdPMetadataBuilder idPMetadataBuilder = IdPMetadata
-                .newBuilder(0, name).setDialect("wso2").setDisplayName(label).setDescription(description);
-        identityProviderBuilder.setIdPMetadata(idPMetadataBuilder.build());
+                .newBuilder(0, name);
+        identityProviderBuilder.setDialectId(1).setDisplayLabel(label).setDescription(description);
+        identityProviderBuilder.build();
 
         return identityProviderBuilder.build();
     }

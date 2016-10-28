@@ -18,10 +18,13 @@
 
 package org.wso2.carbon.identity.provider;
 
+import org.wso2.carbon.identity.provider.common.model.AuthenticationConfig;
 import org.wso2.carbon.identity.provider.common.model.AuthenticatorConfig;
 import org.wso2.carbon.identity.provider.common.model.ClaimConfig;
+import org.wso2.carbon.identity.provider.common.model.IdPMetadata;
 import org.wso2.carbon.identity.provider.common.model.IdentityProvider;
 import org.wso2.carbon.identity.provider.common.model.ProvisionerConfig;
+import org.wso2.carbon.identity.provider.common.model.ProvisioningConfig;
 import org.wso2.carbon.identity.provider.common.model.ResidentIdentityProvider;
 import org.wso2.carbon.identity.provider.common.model.RoleConfig;
 
@@ -34,69 +37,38 @@ import java.util.Set;
  */
 public interface IdentityProviderService {
 
-    ResidentIdentityProvider getResidentIdP() throws IdentityProviderException;
+    List<String> listIdentityProviders() throws IdentityProviderException;
 
-    void createResidentIdP(ResidentIdentityProvider identityProvider) throws IdentityProviderException;
+    List<String> listEnabledIdentityProviders() throws IdentityProviderException;
 
-    void updateResidentIdP(ResidentIdentityProvider identityProvider) throws IdentityProviderException;
+    int createIdentityProvider(IdentityProvider identityProvider) throws IdentityProviderException;
 
-    void enableResidentIdP() throws IdentityProviderException;
+    IdentityProvider getIdentityProvider(int identityProviderId) throws IdentityProviderException;
 
-    void disableResidentIdP() throws IdentityProviderException;
+    IdentityProvider getIdentityProvider(String idPName) throws IdentityProviderException;
 
-    void updateMetaIdentityProvider() throws IdentityProviderException;
+    IdentityProvider getIdPByProperty(String name, Object value) throws IdentityProviderException;
 
-    void updateAuthenticatorConfig() throws IdentityProviderException;
+    IdentityProvider getIdPByAuthenticatorProperty(String name, Object value) throws IdentityProviderException;
 
-    void updateProvisioningConfig() throws IdentityProviderException;
+    IdentityProvider getIdPByProvisionerProperty(String name, Object value) throws IdentityProviderException;
 
-    void updateProperties() throws IdentityProviderException;
+    void updateIdentityProvider(IdentityProvider identityProvider) throws IdentityProviderException;
 
-    List<IdentityProvider> getIdPs(boolean includeResidentIdP) throws IdentityProviderException;
+    void deleteIdentityProvider(int identityProviderId) throws IdentityProviderException;
 
-    IdentityProvider getIdP(String idPName) throws IdentityProviderException;
+    void enableIdentityProvider(int identityProviderId) throws IdentityProviderException;
 
-    IdentityProvider getIdP(int idPId) throws IdentityProviderException;
+    void disableIdentityProvider(int identityProviderId) throws IdentityProviderException;
 
-    List<IdentityProvider> getEnabledIdPs(String tenantDomain) throws IdentityProviderException;
+    void updateIdPMetadata(int identityProviderId, IdPMetadata metadata) throws IdentityProviderException;
 
-    IdentityProvider getEnabledIdPByName(String idPName) throws IdentityProviderException;
+    void updateIdPAuthenticationConfig(int identityProviderId, AuthenticationConfig authenticationConfig) throws
+                                                                                                          IdentityProviderException;
 
-    IdentityProvider getIdPByName(String idPName) throws IdentityProviderException;
+    void updateIdPProvisioningConfig(int identityProviderId, ProvisioningConfig provisioningConfig) throws
+                                                                                                    IdentityProviderException;
 
-    IdentityProvider getIdPByAuthenticatorPropertyValue(String name, String value) throws IdentityProviderException;
-
-    Set<ClaimConfig> getMappedLocalClaims(String idPName, List<String> idPClaimURIs) throws IdentityProviderException;
-
-    Map<String, String> getMappedLocalClaimsMap(String idPName, String tenantDomain, List<String> idPClaimURIs)
-            throws IdentityProviderException;
-
-    Set<ClaimConfig> getMappedIdPClaims(String idPName, String tenantDomain, List<String> localClaimURIs)
-            throws IdentityProviderException;
-
-    Map<String, String> getMappedIdPClaimsMap(String idPName, String tenantDomain, List<String> localClaimURIs)
-            throws IdentityProviderException;
-
-    Set<RoleConfig> getMappedLocalRoles(String idPName, String tenantDomain, String[] idPRoles)
-            throws IdentityProviderException;
-
-    Map<String, RoleConfig> getMappedLocalRolesMap(String idPName, String tenantDomain, String[] idPRoles)
-            throws IdentityProviderException;
-
-    Set<RoleConfig> getMappedIdPRoles(String idPName, String tenantDomain, RoleConfig[] localRoles)
-            throws IdentityProviderException;
-
-    Map<RoleConfig, String> getMappedIdPRolesMap(String idPName, String tenantDomain, RoleConfig[] localRoles)
-            throws IdentityProviderException;
-
-    void createIdP(IdentityProvider identityProvider) throws IdentityProviderException;
-
-    void deleteIdP(String idPName) throws IdentityProviderException;
-
-    void updateIdP(String oldIdPName, IdentityProvider newIdentityProvider) throws IdentityProviderException;
-
-    AuthenticatorConfig[] getAllFederatedAuthenticators() throws IdentityProviderException;
-
-    ProvisionerConfig[] getAllProvisioningConnectors() throws IdentityProviderException;
+    void updateIdPProperties(int identityProviderId, Map<String,Object> properties) throws IdentityProviderException;
 
 }
