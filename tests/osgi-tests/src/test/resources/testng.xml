@@ -17,12 +17,10 @@
 
 <!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
 
-<suite name="Carbon-JNDI-Test-Suite">
-    <test name="carbon-jndi-tests" preserve-order="true" parallel="false">
+<suite name="Identity-Providers-Test-Suite">
+    <test name="idp-tests" preserve-order="true" parallel="false">
         <classes>
-            <!--<class name="org.wso2.carbon.datasource.osgi.DataSourceServiceTest"/>-->
-            <class name="org.wso2.carbon.identity.provider.dao.IdentityProviderDAOTest"/>
-            <!--<class name="org.wso2.carbon.identity.provider.IdentityProviderServiceOsgiTest"/>-->
+            <class name="org.wso2.carbon.identity.provider.IdentityProviderServiceOsgiTest"/>
         </classes>
     </test>
 </suite>
