@@ -21,7 +21,7 @@ package org.wso2.carbon.identity.provider.dao;
 import org.h2.jdbcx.JdbcConnectionPool;
 import org.testng.annotations.Test;
 import org.wso2.carbon.identity.provider.common.model.IdentityProvider;
-import org.wso2.carbon.identity.provider.common.model.MetaIdentityProvider;
+import org.wso2.carbon.identity.provider.common.model.IdPMetadata;
 import org.wso2.carbon.identity.provider.common.model.ResidentIdentityProvider;
 
 import javax.sql.DataSource;
@@ -73,9 +73,9 @@ public class IdentityProviderDAOTest {
     private IdentityProvider createIdentityProvider(String name, String label, String description) {
         IdentityProvider.IdentityProviderBuilder identityProviderBuilder = ResidentIdentityProvider
                 .newBuilder(null);
-        MetaIdentityProvider.MetaIdentityProviderBuilder metaIdentityProviderBuilder = MetaIdentityProvider
+        IdPMetadata.IdPMetadataBuilder idPMetadataBuilder = IdPMetadata
                 .newBuilder(0, name).setDialect("wso2").setDisplayName(label).setDescription(description);
-        identityProviderBuilder.setMetaIdentityProvider(metaIdentityProviderBuilder.build());
+        identityProviderBuilder.setIdPMetadata(idPMetadataBuilder.build());
 
         return identityProviderBuilder.build();
     }

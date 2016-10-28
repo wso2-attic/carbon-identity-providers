@@ -23,7 +23,23 @@ package org.wso2.carbon.identity.provider.common.model;
  */
 public class FederatedIdentityProvider extends IdentityProvider {
 
-    protected FederatedIdentityProvider(IdentityProviderBuilder builder) {
+    private FederatedIdentityProvider(FederatedIdentityProviderBuilder builder) {
         super(builder);
+    }
+
+    public static IdentityProviderBuilder newBuilder(int id, String name) {
+        return new FederatedIdentityProviderBuilder(id, name);
+    }
+
+    public static class FederatedIdentityProviderBuilder extends IdentityProviderBuilder {
+
+        private FederatedIdentityProviderBuilder(int id, String name) {
+            super(id, name);
+        }
+
+        @Override
+        public FederatedIdentityProvider build() {
+            return new  FederatedIdentityProvider(this);
+        }
     }
 }

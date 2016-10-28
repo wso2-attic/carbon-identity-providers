@@ -18,11 +18,12 @@
 
 package org.wso2.carbon.identity.provider.common.model;
 
+import org.apache.commons.collections.MapUtils;
+import org.apache.commons.lang3.StringUtils;
+
 import java.io.Serializable;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Configuration of an provisioning entity.
@@ -33,10 +34,9 @@ public class ProvisionerConfig implements Serializable {
 
     protected String name;
     protected boolean isEnabled;
-    protected boolean isJitEnabled;
-    protected Set<IdentityConnectorProperty> properties = new HashSet<IdentityConnectorProperty>();
+    protected Map<String,Object> properties = new HashMap<>();
 
-    private ProvisionerConfig(ProvisioningConnectorConfigBuilder builder) {
+    private ProvisionerConfig(ProvisionerConfigBuilder builder) {
         this.name = builder.name;
         this.properties = builder.properties;
     }
@@ -45,59 +45,49 @@ public class ProvisionerConfig implements Serializable {
         return name;
     }
 
-    public Collection<IdentityConnectorProperty> getProperties() {
-        return Collections.unmodifiableCollection(properties);
+    public Map<String,Object> getProperties() {
+        return MapUtils.unmodifiableMap(properties);
     }
 
     public boolean isEnabled() {
         return isEnabled;
     }
 
-    public boolean isJitEnabled() {
-        return isJitEnabled;
-    }
-
     /**
      * Builds the configuration of a provisioning connector.
      */
-    public class ProvisioningConnectorConfigBuilder {
+    public class ProvisionerConfigBuilder {
 
         protected String name;
         protected boolean isEnabled;
-        protected boolean isJitEnabled;
-        protected Set<IdentityConnectorProperty> properties = new HashSet<IdentityConnectorProperty>();
+        protected Map<String,Object> properties = new HashMap<String,Object>();
 
-        public ProvisioningConnectorConfigBuilder(String name) {
+        public ProvisionerConfigBuilder(String name) {
             this.name = name;
         }
 
-        public ProvisioningConnectorConfigBuilder setEnabled(boolean isEnabled) {
+        public ProvisionerConfigBuilder setEnabled(boolean isEnabled) {
             this.isEnabled = isEnabled;
             return this;
         }
 
-        public ProvisioningConnectorConfigBuilder setJitEnabled(boolean isJitEnabled) {
-            this.isJitEnabled = isJitEnabled;
-            return this;
-        }
-
-        public ProvisioningConnectorConfigBuilder setProperties(Collection<IdentityConnectorProperty> properties) {
+        public ProvisionerConfigBuilder setProperties(Map<String,Object> properties) {
             if (!properties.isEmpty()) {
-                this.properties = new HashSet<IdentityConnectorProperty>(properties);
+                this.properties = new HashMap<>(properties);
             }
             return this;
         }
 
-        public ProvisioningConnectorConfigBuilder addProperty(IdentityConnectorProperty property) {
-            if (property != null) {
-                this.properties.add(property);
+        public ProvisionerConfigBuilder addProperty(String name, Object value) {
+            if (StringUtils.isNotBlank(name) && value != null) {
+                this.properties.put(name, value);
             }
             return this;
         }
 
-        public ProvisioningConnectorConfigBuilder addProperties(Collection<IdentityConnectorProperty> properties) {
+        public ProvisionerConfigBuilder addProperties(Map<String,Object> properties) {
             if (!properties.isEmpty()) {
-                this.properties.addAll(properties);
+                this.properties.putAll(properties);
             }
             return this;
         }

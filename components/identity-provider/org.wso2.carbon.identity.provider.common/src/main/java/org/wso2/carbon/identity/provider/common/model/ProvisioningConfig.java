@@ -23,31 +23,26 @@ import org.apache.commons.collections.CollectionUtils;
 import java.util.Collection;
 import java.util.HashSet;
 
-/**
- * Do we need to remove this class and move all the attributes to IDP level?
- */
 public class ProvisioningConfig {
 
-    private String provisioningRole;
-    private Collection<ProvisioningClaim> provisioningClaims = new HashSet<ProvisioningClaim>();
-
-    // Is it OK to have identitystore as a attribute of IdentityProvider?
     private JITProvisioningConfig jitProvisioningConfig;
+    private Collection<ProvisioningClaim> provisioningClaims = new HashSet<ProvisioningClaim>();
+    private Collection<String> provisioningRoles = new HashSet<>();
     private Collection<ProvisionerConfig> provisioners = new HashSet<ProvisionerConfig>();
 
     private ProvisioningConfig(ProvisioningConfigBuilder builder) {
-        this.provisioningRole = builder.selectiveProvisioningRole;
-        this.provisioningClaims = builder.provisioningClaims;
         this.jitProvisioningConfig = builder.jitProvisioningConfigBuilder.build();
+        this.provisioningClaims = builder.provisioningClaims;
+        this.provisioningRoles = builder.provisioningRoles;
         this.provisioners = builder.provisioners;
-    }
-
-    public String getProvisioningRole() {
-        return provisioningRole;
     }
 
     public Collection<ProvisioningClaim> getProvisioningClaims() {
         return provisioningClaims;
+    }
+
+    public Collection<String> getProvisioningRoles() {
+        return provisioningRoles;
     }
 
     public JITProvisioningConfig getJitProvisioningConfig() {
@@ -63,20 +58,14 @@ public class ProvisioningConfig {
      */
     public static class ProvisioningConfigBuilder {
 
-        private String selectiveProvisioningRole;
         private Collection<ProvisioningClaim> provisioningClaims = new HashSet<ProvisioningClaim>();
+        private Collection<String> provisioningRoles = new HashSet<>();
         private JITProvisioningConfig.JITProvisioningConfigBuilder jitProvisioningConfigBuilder =
                 new JITProvisioningConfig.JITProvisioningConfigBuilder();
         private Collection<ProvisionerConfig> provisioners = new HashSet<ProvisionerConfig>();
 
         public ProvisioningConfigBuilder() {
 
-        }
-
-        public ProvisioningConfigBuilder setSelectiveProvisioningRole(
-                String selectiveProvisioningRole) {
-            this.selectiveProvisioningRole = selectiveProvisioningRole;
-            return this;
         }
 
         public ProvisioningConfigBuilder setProvisioningClaims(
@@ -91,9 +80,26 @@ public class ProvisioningConfig {
             return this;
         }
 
-        public ProvisioningConfigBuilder addProvisioningClaims(
-                Collection<ProvisioningClaim> provisioningClaims) {
+        public ProvisioningConfigBuilder addProvisioningClaims(Collection<ProvisioningClaim> provisioningClaims) {
             this.provisioningClaims.addAll(provisioningClaims);
+            return this;
+        }
+
+        public ProvisioningConfigBuilder setProvisioningRoles(
+                Collection<String> provisioningRoles) {
+            this.provisioningRoles.clear();
+            this.provisioningRoles.addAll(provisioningRoles);
+            return this;
+        }
+
+        public ProvisioningConfigBuilder addProvisionRole(String provisioningRole) {
+            this.provisioningRoles.add(provisioningRole);
+            return this;
+        }
+
+        public ProvisioningConfigBuilder addProvisioningRoles(
+                Collection<String> provisioningRoles) {
+            this.provisioningRoles.addAll(provisioningRoles);
             return this;
         }
 

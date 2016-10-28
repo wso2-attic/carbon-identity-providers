@@ -56,3 +56,8 @@ Do we have SP-SP relationships - can SP grouping for SSO be considered a relatio
 feature we need to provider. It may be pointless to provide generic relationship feature just to solve on requirement.
 Do we need SP-userstore relationship for jit provisioning?
 
+Removed provisioning role because the way we used provisioning role was to trigger outbound provisioning. Not to say
+users in a particular role must get provisioned. For triggering we can have a button in the UI and trigger (or as a
+workaround have a new internal role domain called "TRIGGER_PROV" and assign users to that). For provisioning users
+who belong to particular role in 5.3.0 we can achieve that by writing some template xacml policies. Removed
+isJitEnabled as well because it didn't make sense.

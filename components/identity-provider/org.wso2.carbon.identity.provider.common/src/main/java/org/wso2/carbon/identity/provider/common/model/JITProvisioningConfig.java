@@ -32,10 +32,16 @@ public class JITProvisioningConfig implements Serializable {
 
     private static final long serialVersionUID = -3886962663799281628L;
 
+    private boolean jitEnabled;
     private Collection<String> provisioningIdPs = new HashSet<String>();
 
     private JITProvisioningConfig(JITProvisioningConfigBuilder builder) {
+        this.jitEnabled = builder.jitEnabled;
         this.provisioningIdPs = builder.provisioningIdPs;
+    }
+
+    public boolean isJitEnabled() {
+        return jitEnabled;
     }
 
     public Collection<String> getProvisioningIdPs() {
@@ -47,10 +53,16 @@ public class JITProvisioningConfig implements Serializable {
      */
     public static class JITProvisioningConfigBuilder {
 
+        private boolean jitEnabled;
         private Collection<String> provisioningIdPs = new HashSet<String>();
 
         public JITProvisioningConfigBuilder() {
 
+        }
+
+        public JITProvisioningConfigBuilder setJitEnabled(boolean jitEnabled) {
+            this.jitEnabled = jitEnabled;
+            return this;
         }
 
         public JITProvisioningConfigBuilder setProvisioningIdPs(

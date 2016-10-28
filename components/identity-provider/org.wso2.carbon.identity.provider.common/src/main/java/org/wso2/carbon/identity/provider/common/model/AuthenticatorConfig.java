@@ -18,10 +18,15 @@
 
 package org.wso2.carbon.identity.provider.common.model;
 
+import org.apache.commons.collections.MapUtils;
+import org.apache.commons.lang3.StringUtils;
+
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -33,10 +38,9 @@ public class AuthenticatorConfig implements Serializable {
 
     protected String name;
     protected boolean isEnabled;
-    protected Collection<String> requestedClaims = new HashSet<String>();
-    protected Set<IdentityConnectorProperty> properties = new HashSet<IdentityConnectorProperty>();
+    protected Map<String,Object> properties = new HashMap<>();
 
-    private AuthenticatorConfig(AuthenticatorConfigBuilder builder) {
+    protected AuthenticatorConfig(AuthenticatorConfigBuilder builder) {
         this.name = builder.name;
         this.properties = builder.properties;
     }
@@ -45,12 +49,8 @@ public class AuthenticatorConfig implements Serializable {
         return name;
     }
 
-    public Collection<String> getRequestedClaims() {
-        return Collections.unmodifiableCollection(requestedClaims);
-    }
-
-    public Collection<IdentityConnectorProperty> getProperties() {
-        return Collections.unmodifiableCollection(properties);
+    public Map<String,Object> getProperties() {
+        return MapUtils.unmodifiableMap(properties);
     }
 
     public boolean isEnabled() {
@@ -60,11 +60,11 @@ public class AuthenticatorConfig implements Serializable {
     /**
      * Builds the configuration of an authenticator of IDP.
      */
-    public class AuthenticatorConfigBuilder {
+    public static class AuthenticatorConfigBuilder {
 
-        protected String name;
-        protected boolean isEnabled;
-        protected Set<IdentityConnectorProperty> properties = new HashSet<IdentityConnectorProperty>();
+        private String name;
+        private boolean isEnabled;
+        private Map<String,Object> properties = new HashMap<>();
 
         public AuthenticatorConfigBuilder(String name) {
             this.name = name;
@@ -75,23 +75,23 @@ public class AuthenticatorConfig implements Serializable {
             return this;
         }
 
-        public AuthenticatorConfigBuilder setProperties(Collection<IdentityConnectorProperty> properties) {
+        public AuthenticatorConfigBuilder setProperties(Map<String,Object> properties) {
             if (!properties.isEmpty()) {
-                this.properties = new HashSet<IdentityConnectorProperty>(properties);
+                this.properties = new HashMap<>(properties);
             }
             return this;
         }
 
-        public AuthenticatorConfigBuilder addProperty(IdentityConnectorProperty property) {
-            if (property != null) {
-                this.properties.add(property);
+        public AuthenticatorConfigBuilder addProperty(String name, Object value) {
+            if (StringUtils.isNotBlank(name) && value != null) {
+                this.properties.put(name, value);
             }
             return this;
         }
 
-        public AuthenticatorConfigBuilder addProperties(Collection<IdentityConnectorProperty> properties) {
+        public AuthenticatorConfigBuilder addProperties(Map<String,Object> properties) {
             if (!properties.isEmpty()) {
-                this.properties.addAll(properties);
+                this.properties.putAll(properties);
             }
             return this;
         }
