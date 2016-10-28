@@ -29,15 +29,14 @@ public class ClaimConfig implements Serializable {
 
     private static final long serialVersionUID = -3886962663799281628L;
 
-    // We have removed UserID claim URI and role claim URI because it should come from ClaimMgt component
-    private String dialect;
+    private int dialectId;
 
     private ClaimConfig(ClaimConfigBuilder builder) {
-        this.dialect = builder.dialect;
+        this.dialectId = builder.dialectId;
     }
 
-    public String getDialect() {
-        return dialect;
+    public int getDialectId() {
+        return dialectId;
     }
 
     /**
@@ -45,14 +44,10 @@ public class ClaimConfig implements Serializable {
      */
     static class ClaimConfigBuilder {
 
-        private String dialect;
+        private int dialectId;
 
-        ClaimConfigBuilder(String dialect) {
-            if (StringUtils.isNoneBlank(dialect)) {
-                this.dialect = dialect;
-            } else {
-                throw new IllegalArgumentException("Invalid claim dialect: " + dialect);
-            }
+        ClaimConfigBuilder(int dialectId) {
+            this.dialectId = dialectId;
         }
 
         ClaimConfig build() {

@@ -32,7 +32,7 @@ public class RoleConfig implements Serializable {
 
     private static final long serialVersionUID = 8637428653822260106L;
 
-    private Map<String, String> roleMapping = new HashMap<String, String>();
+    private Map<Integer, String> roleMapping = new HashMap<>();
 
     private RoleConfig(RoleConfigBuilder builder) {
         this.roleMapping = builder.roleMapping;
@@ -47,9 +47,9 @@ public class RoleConfig implements Serializable {
      */
     static class RoleConfigBuilder {
 
-        private Map<String, String> roleMapping = new HashMap<String, String>();
+        private Map<Integer, String> roleMapping = new HashMap<>();
 
-        RoleConfigBuilder setRoleMappings(Map<String, String> roleMap) {
+        RoleConfigBuilder setRoleMappings(Map<Integer, String> roleMap) {
             if (!roleMap.isEmpty()) {
                 this.roleMapping.clear();
                 this.roleMapping.putAll(roleMap);
@@ -57,14 +57,14 @@ public class RoleConfig implements Serializable {
             return this;
         }
 
-        RoleConfigBuilder addRoleMapping(String role1, String role2) {
-            if (StringUtils.isNotBlank(role1) && StringUtils.isNotBlank(role2)) {
-                this.roleMapping.put(role1, role2);
+        RoleConfigBuilder addRoleMapping(int localRoleId, String role2) {
+            if (StringUtils.isNotBlank(role2)) {
+                this.roleMapping.put(localRoleId, role2);
             }
             return this;
         }
 
-        RoleConfigBuilder addRoleMappings(Map<String, String> roleMap) {
+        RoleConfigBuilder addRoleMappings(Map<Integer, String> roleMap) {
             if (!roleMap.isEmpty()) {
                 this.roleMapping.putAll(roleMap);
             }

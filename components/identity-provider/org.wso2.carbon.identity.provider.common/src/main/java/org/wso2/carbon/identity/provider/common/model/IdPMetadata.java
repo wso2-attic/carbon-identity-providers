@@ -41,10 +41,7 @@ public class IdPMetadata implements Serializable {
     // Map<certId,certAlias>
     private Map<String, String> certMap;
 
-    // Do we need to have ClaimConfig object? Or can we directly store the claimDialectURI? UserId and RoleID will be
-    // defined in ClaimMgt
     private ClaimConfig claimConfig;
-
     private RoleConfig roleConfig;
 
     private IdPMetadata() {
@@ -148,22 +145,22 @@ public class IdPMetadata implements Serializable {
             return this;
         }
 
-        public IdPMetadataBuilder setDialect(String dialect) {
-            this.claimConfigBuilder = new ClaimConfig.ClaimConfigBuilder(dialect);
+        public IdPMetadataBuilder setDialect(int dialectId) {
+            this.claimConfigBuilder = new ClaimConfig.ClaimConfigBuilder(dialectId);
             return this;
         }
 
-        public IdPMetadataBuilder setRoleMappings(Map<String, String> roleMap) {
+        public IdPMetadataBuilder setRoleMappings(Map<Integer, String> roleMap) {
             this.roleConfigBuilder.setRoleMappings(roleMap);
             return this;
         }
 
-        public IdPMetadataBuilder addRoleMapping(String role1, String role2) {
-            this.roleConfigBuilder.addRoleMapping(role1, role2);
+        public IdPMetadataBuilder addRoleMapping(int localRoleId, String role2) {
+            this.roleConfigBuilder.addRoleMapping(localRoleId, role2);
             return this;
         }
 
-        public IdPMetadataBuilder addRoleMappings(Map<String, String> roleMap) {
+        public IdPMetadataBuilder addRoleMappings(Map<Integer, String> roleMap) {
             this.roleConfigBuilder.addRoleMappings(roleMap);
             return this;
         }
