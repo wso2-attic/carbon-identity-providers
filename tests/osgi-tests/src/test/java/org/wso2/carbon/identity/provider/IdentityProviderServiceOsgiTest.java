@@ -75,9 +75,8 @@ public class IdentityProviderServiceOsgiTest {
                 mavenBundle().artifactId("org.wso2.carbon.datasource.core").groupId("org.wso2.carbon.datasources")
                         .versionAsInProject(),
                 mavenBundle().artifactId("org.wso2.carbon.jndi").groupId("org.wso2.carbon.jndi").versionAsInProject(),
-                mavenBundle().artifactId("commons-collections").groupId("apache-collections").versionAsInProject(),
-                mavenBundle().artifactId("org.wso2.carbon.identity.provider.common")
-                        .groupId("org.wso2.carbon.identity.provider").versionAsInProject());
+                mavenBundle().artifactId("commons-collections").groupId("apache-collections").versionAsInProject()
+        );
         return OSGiTestUtils.getDefaultPaxOptions(options);
     }
 
