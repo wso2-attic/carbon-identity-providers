@@ -26,8 +26,8 @@ import org.osgi.service.jndi.JNDIContextManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.wso2.carbon.identity.provider.IdentityProviderService;
-import org.wso2.carbon.identity.provider.IdentityProviderServiceImpl;
-import org.wso2.carbon.identity.provider.dao.IdentityProviderDAO;
+import org.wso2.carbon.identity.provider.internal.service.IdentityProviderServiceImpl;
+import org.wso2.carbon.identity.provider.internal.dao.IdentityProviderDAO;
 import org.wso2.carbon.identity.provider.dao.JdbcTemplate;
 
 import javax.naming.Context;

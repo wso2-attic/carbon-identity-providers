@@ -66,6 +66,34 @@ public class JdbcTemplate {
         return result;
     }
 
+    /**
+     * Executes a query on JDBC and return the result as a domain object.
+     *
+     * @param query the SQL query with the parameter placeholders.
+     * @param rowMapper Row mapper functional interface
+     * @param filter parameters for the SQL query parameter replacement.
+     * @return domain object of required type.
+     */
+    public <T extends Object> T fetchSingleRecord(String query, RowMapper<T> rowMapper, QueryFilter filter) {
+        T result = null;
+        try (Connection connection = dataSource.getConnection();
+                PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+            if(filter != null) {
+                filter.filter(preparedStatement);
+            }
+            ResultSet resultSet = preparedStatement.executeQuery();
+            if (resultSet.next()) {
+                result = rowMapper.mapRow(resultSet, 0);
+            }
+            if(resultSet.next()) {
+                logger.error("There are more records than one found for query: {} , \n parameters: {}", query, filter);
+            }
+        } catch (SQLException e) {
+            logger.error("Error in performing Database query: {} :\n {}parameters", query, filter);
+        }
+        return result;
+    }
+
     public void executeUpdate(String query, Object... params) {
         try (Connection connection = dataSource.getConnection();
                 PreparedStatement preparedStatement = connection.prepareStatement(query)) {
@@ -90,14 +118,49 @@ public class JdbcTemplate {
     public <T extends Object> void executeUpdate(String query, RowExtractor<T> rowExtractor, T bean) {
         try (Connection connection = dataSource.getConnection();
                 PreparedStatement preparedStatement = connection.prepareStatement(query)) {
-            if (bean != null && rowExtractor != null) {
-                rowExtractor.extract(preparedStatement, bean);
-            } else {
-                logger.error("Error in performing Database Row Extractor: " + rowExtractor + "\n bean " + bean);
-            }
-            preparedStatement.executeUpdate();
+            doInternalUpdate(rowExtractor, bean, preparedStatement);
         } catch (SQLException e) {
             logger.error("Error in performing Database update: " + query + "\n bean " + bean);
         }
+    }
+
+    private <T extends Object> void doInternalUpdate(RowExtractor<T> rowExtractor, T bean,
+            PreparedStatement preparedStatement) throws SQLException {
+        if (bean != null && rowExtractor != null) {
+            rowExtractor.extract(preparedStatement, bean);
+        } else {
+            logger.error("Error in performing Database Row Extractor: " + rowExtractor + "\n bean " + bean);
+        }
+        preparedStatement.executeUpdate();
+    }
+
+    /**
+     * Executes the jdbc insert/update query.
+     *
+     * @param query The SQL for insert/update.
+     * @param rowExtractor Domain object (bean) to prepared statement parameter binding.
+     * @param bean the Domain object to be inserted/updated.
+     * @param <T>
+     */
+    public <T extends Object> int executeInsert(String query, RowExtractor<T> rowExtractor, T bean, boolean fetchInsertedId) {
+        try (Connection connection = dataSource.getConnection();
+                PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+            doInternalUpdate(rowExtractor, bean, preparedStatement);
+            if(fetchInsertedId) {
+                if(logger.isDebugEnabled()) {
+                    logger.debug("Mapping generated key (Auto Increment ID) to the object");
+                }
+                try (ResultSet generatedKeys = preparedStatement.getGeneratedKeys()) {
+                    if (generatedKeys.next()) {
+                        return generatedKeys.getInt(1);
+                    } else {
+                        throw new SQLException("Creating user failed, no ID obtained.");
+                    }
+                }
+            }
+        } catch (SQLException e) {
+            logger.error("Error in performing Database update: " + query + "\n bean " + bean);
+        }
+        return 0;
     }
 }

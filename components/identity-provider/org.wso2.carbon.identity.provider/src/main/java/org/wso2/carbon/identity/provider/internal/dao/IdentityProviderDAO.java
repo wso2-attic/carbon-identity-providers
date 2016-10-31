@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016 WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+ * Copyright (c) 2016, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
  *
  * WSO2 Inc. licenses this file to you under the Apache License,
  * Version 2.0 (the "License"); you may not use this file except
@@ -16,7 +16,7 @@
  * under the License.
  */
 
-package org.wso2.carbon.identity.provider.dao;
+package org.wso2.carbon.identity.provider.internal.dao;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,6 +24,8 @@ import org.wso2.carbon.identity.provider.IdentityProviderException;
 import org.wso2.carbon.identity.provider.common.model.IdPMetadata;
 import org.wso2.carbon.identity.provider.common.model.IdentityProvider;
 import org.wso2.carbon.identity.provider.common.model.ResidentIdentityProvider;
+import org.wso2.carbon.identity.provider.dao.JdbcBasedDAO;
+import org.wso2.carbon.identity.provider.dao.JdbcTemplate;
 
 import java.util.List;
 
@@ -43,18 +45,21 @@ public class IdentityProviderDAO implements JdbcBasedDAO {
     /**
      * Adds an identity provider to the persistent store.
      * @param identityProvider The IdP to be added.
+     * @return the ID of the newly inserted Identity provider.
      * @throws IdentityProviderException when any database level exception occurs.
      */
-    public void createIdentityProvider(IdentityProvider identityProvider) throws IdentityProviderException {
+    public int createIdentityProvider(IdentityProvider identityProvider) throws IdentityProviderException {
         final String INSERT_IDP_SQL = "INSERT INTO IDP (NAME, DISPLAY_NAME, DESCRIPTION) " + "VALUES(?,?,?)";
 
-        this.jdbcTemplate.executeUpdate(INSERT_IDP_SQL, (preparedStatement, bean) -> {
+        int insertedId = this.jdbcTemplate.executeInsert(INSERT_IDP_SQL, (preparedStatement, bean) -> {
             IdPMetadata idPMetadata = identityProvider.getIdPMetadata();
             preparedStatement.setString(1, idPMetadata.getName());
             preparedStatement.setString(2, idPMetadata.getDisplayLabel());
             preparedStatement.setString(3, idPMetadata.getDescription());
 
-        }, identityProvider);
+        }, identityProvider, true);
+
+        return insertedId;
     }
 
     /**
@@ -77,7 +82,35 @@ public class IdentityProviderDAO implements JdbcBasedDAO {
     }
 
     public IdentityProvider getIdentityProvider(int identityProviderId) {
-        return null;
+        final String GET_ALL_IDP_SQL = "SELECT ID, NAME, DISPLAY_NAME, DESCRIPTION, "
+                + "IS_FEDERATION_HUB, IS_LOCAL_CLAIM_DIALECT, IS_ENABLED, ID FROM IDP WHERE ID=?";
+
+        IdentityProvider identityProvider = this.jdbcTemplate.fetchSingleRecord(GET_ALL_IDP_SQL, (resultSet, rowNumber) -> {
+            IdentityProvider.IdentityProviderBuilder identityProviderBuilder = ResidentIdentityProvider
+                    .newBuilder(resultSet.getInt("ID"), resultSet.getString("NAME"));
+            identityProviderBuilder.build();
+            return identityProviderBuilder.build();
+        },(preparedStatement) -> {
+            preparedStatement.setInt(1, identityProviderId);
+        });
+
+        return identityProvider;
+    }
+
+    public IdentityProvider getIdentityProvider(String identityProviderName) {
+        final String GET_ALL_IDP_SQL = "SELECT ID, NAME, DISPLAY_NAME, DESCRIPTION, "
+                + "IS_FEDERATION_HUB, IS_LOCAL_CLAIM_DIALECT, IS_ENABLED, ID FROM IDP WHERE NAME=?";
+
+        IdentityProvider identityProvider = this.jdbcTemplate.fetchSingleRecord(GET_ALL_IDP_SQL, (resultSet, rowNumber) -> {
+            IdentityProvider.IdentityProviderBuilder identityProviderBuilder = ResidentIdentityProvider
+                    .newBuilder(resultSet.getInt("ID"), resultSet.getString("NAME"));
+            identityProviderBuilder.build();
+            return identityProviderBuilder.build();
+        },(preparedStatement) -> {
+            preparedStatement.setString(1, identityProviderName);
+        });
+
+        return identityProvider;
     }
 
     public List<IdentityProvider> listIdentityProviderByName(String identityProviderName) {
