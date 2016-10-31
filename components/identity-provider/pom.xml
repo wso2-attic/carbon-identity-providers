@@ -39,6 +39,7 @@
 
     <modules>
         <module>org.wso2.carbon.identity.provider</module>
+        <module>org.wso2.carbon.identity.service.provider</module>
     </modules>
 
     <properties>
