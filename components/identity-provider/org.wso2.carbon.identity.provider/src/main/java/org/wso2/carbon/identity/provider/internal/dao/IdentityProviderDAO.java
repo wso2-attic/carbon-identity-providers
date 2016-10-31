@@ -18,21 +18,23 @@
 
 package org.wso2.carbon.identity.provider.internal.dao;
 
+import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.wso2.carbon.identity.provider.IdentityProviderException;
 import org.wso2.carbon.identity.provider.common.model.IdPMetadata;
 import org.wso2.carbon.identity.provider.common.model.IdentityProvider;
 import org.wso2.carbon.identity.provider.common.model.ResidentIdentityProvider;
-import org.wso2.carbon.identity.provider.dao.JdbcBasedDAO;
 import org.wso2.carbon.identity.provider.dao.JdbcTemplate;
+
 
 import java.util.List;
 
 /**
  * Data Access Object to the data storage to retrieve and store identity provider and related configurations.
  */
-public class IdentityProviderDAO implements JdbcBasedDAO {
+public class IdentityProviderDAO {
 
     private static final Logger log = LoggerFactory.getLogger(IdentityProviderDAO.class);
 
@@ -49,7 +51,8 @@ public class IdentityProviderDAO implements JdbcBasedDAO {
      * @throws IdentityProviderException when any database level exception occurs.
      */
     public int createIdentityProvider(IdentityProvider identityProvider) throws IdentityProviderException {
-        final String INSERT_IDP_SQL = "INSERT INTO IDP (NAME, DISPLAY_NAME, DESCRIPTION) " + "VALUES(?,?,?)";
+        final String INSERT_IDP_SQL = "INSERT INTO IDP (NAME, DISPLAY_NAME, DESCRIPTION) "
+                + "VALUES(?,?,?)";
 
         int insertedId = this.jdbcTemplate.executeInsert(INSERT_IDP_SQL, (preparedStatement, bean) -> {
             IdPMetadata idPMetadata = identityProvider.getIdPMetadata();
@@ -63,22 +66,38 @@ public class IdentityProviderDAO implements JdbcBasedDAO {
     }
 
     /**
+     * Lists the ID and name of all identity providers.
+     *
      * @return
      * @throws IdentityProviderException
      */
-    public List<IdentityProvider> listIdentityProviders(boolean includeResidentIdP) throws IdentityProviderException {
+    public List<Pair<Integer, String>> listAllIdentityProviders() throws IdentityProviderException {
 
-        final String GET_ALL_IDP_SQL = "SELECT ID, NAME, DISPLAY_NAME, DESCRIPTION, "
-                + "IS_FEDERATION_HUB, IS_LOCAL_CLAIM_DIALECT, IS_ENABLED, ID FROM IDP";
+        final String GET_ALL_IDP_SQL = "SELECT ID, NAME FROM IDP";
 
-        List<IdentityProvider> idps = this.jdbcTemplate.executeQuery(GET_ALL_IDP_SQL, (resultSet, rowNumber) -> {
-            IdentityProvider.IdentityProviderBuilder identityProviderBuilder = ResidentIdentityProvider
-                    .newBuilder(resultSet.getInt("ID"), resultSet.getString("NAME"));
-            identityProviderBuilder.build();
-            return identityProviderBuilder.build();
-        });
+        List<Pair<Integer, String>> idpList = this.jdbcTemplate.executeQuery(GET_ALL_IDP_SQL, (resultSet, rowNumber) ->
+                ImmutablePair.of(resultSet.getInt(1), resultSet.getString(2))
+        );
 
-        return idps;
+        return idpList;
+    }
+
+    /**
+     * Lists the ID and name of all identity providers.
+     *
+     * @return list of Pair of {ID, Name} of identity provider
+     * @throws IdentityProviderException
+     */
+    public List<Pair<Integer, String>> listEnabledIdentityProviders() throws IdentityProviderException {
+
+        final String GET_ALL_IDP_SQL = "SELECT ID, NAME FROM IDP WHERE IS_ENABLED=?";
+
+        List<Pair<Integer, String>> idpList = this.jdbcTemplate.executeQuery(GET_ALL_IDP_SQL,
+                (resultSet, rowNumber) -> ImmutablePair.of(resultSet.getInt(1), resultSet.getString(2)),
+                (preparedStatement -> preparedStatement.setBoolean(1, true))
+        );
+
+        return idpList;
     }
 
     public IdentityProvider getIdentityProvider(int identityProviderId) {
