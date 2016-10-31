@@ -102,8 +102,7 @@ public class OSGiTestUtils {
                 url(mavenBundle().artifactId("org.wso2.carbon.core").groupId("org.wso2.carbon").versionAsInProject()
                         .getURL()),
                 url(mavenBundle().artifactId("org.wso2.carbon.datasource.core").groupId("org.wso2.carbon.datasources")
-                        .versionAsInProject()
-                        .getURL())
+                        .versionAsInProject().getURL())
         );
     }
 
