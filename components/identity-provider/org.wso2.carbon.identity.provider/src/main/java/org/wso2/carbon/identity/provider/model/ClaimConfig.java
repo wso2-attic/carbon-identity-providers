@@ -16,9 +16,7 @@
  * under the License.
  */
 
-package org.wso2.carbon.identity.provider.common.model;
-
-import org.apache.commons.lang3.StringUtils;
+package org.wso2.carbon.identity.provider.model;
 
 import java.io.Serializable;
 

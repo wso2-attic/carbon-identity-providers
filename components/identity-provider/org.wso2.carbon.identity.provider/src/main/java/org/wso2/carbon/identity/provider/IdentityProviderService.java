@@ -18,10 +18,10 @@
 
 package org.wso2.carbon.identity.provider;
 
-import org.wso2.carbon.identity.provider.common.model.AuthenticationConfig;
-import org.wso2.carbon.identity.provider.common.model.IdPMetadata;
-import org.wso2.carbon.identity.provider.common.model.IdentityProvider;
-import org.wso2.carbon.identity.provider.common.model.ProvisioningConfig;
+import org.wso2.carbon.identity.provider.model.AuthenticationConfig;
+import org.wso2.carbon.identity.provider.model.IdPMetadata;
+import org.wso2.carbon.identity.provider.model.IdentityProvider;
+import org.wso2.carbon.identity.provider.model.ProvisioningConfig;
 
 import java.util.List;
 import java.util.Map;

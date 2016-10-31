@@ -130,7 +130,6 @@
         </export.package>
         <import.package>
             org.slf4j.*;version="${slf4j.version}",
-            org.wso2.carbon.identity.provider.common.model.*;version="${project.version}",
         </import.package>
 
         <dsannotations>*</dsannotations>

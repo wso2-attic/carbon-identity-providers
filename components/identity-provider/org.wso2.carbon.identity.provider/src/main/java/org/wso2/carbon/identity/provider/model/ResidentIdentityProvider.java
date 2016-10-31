@@ -16,30 +16,30 @@
  * under the License.
  */
 
-package org.wso2.carbon.identity.provider.common.model;
+package org.wso2.carbon.identity.provider.model;
 
 /**
- * Represents a federated identity provider.
+ * Resident identity provider representation.
  */
-public class FederatedIdentityProvider extends IdentityProvider {
+public class ResidentIdentityProvider extends IdentityProvider {
 
-    private FederatedIdentityProvider(FederatedIdentityProviderBuilder builder) {
+    private ResidentIdentityProvider(ResidentIdentityProviderBuilder builder) {
         super(builder);
     }
 
-    public static IdentityProviderBuilder newBuilder(int id, String name) {
-        return new FederatedIdentityProviderBuilder(id, name);
+    public static ResidentIdentityProviderBuilder newBuilder(int id, String name) {
+        return new ResidentIdentityProviderBuilder(id, name);
     }
 
-    public static class FederatedIdentityProviderBuilder extends IdentityProviderBuilder {
+    protected static class ResidentIdentityProviderBuilder extends IdentityProviderBuilder {
 
-        private FederatedIdentityProviderBuilder(int id, String name) {
+        protected ResidentIdentityProviderBuilder(int id, String name) {
             super(id, name);
         }
 
         @Override
-        public FederatedIdentityProvider build() {
-            return new  FederatedIdentityProvider(this);
+        public ResidentIdentityProvider build() {
+            return new  ResidentIdentityProvider(this);
         }
     }
 }

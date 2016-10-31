@@ -21,8 +21,8 @@ package org.wso2.carbon.identity.provider.dao;
 import org.apache.commons.lang3.tuple.Pair;
 import org.h2.jdbcx.JdbcConnectionPool;
 import org.testng.annotations.Test;
-import org.wso2.carbon.identity.provider.common.model.IdentityProvider;
-import org.wso2.carbon.identity.provider.common.model.ResidentIdentityProvider;
+import org.wso2.carbon.identity.provider.model.IdentityProvider;
+import org.wso2.carbon.identity.provider.model.ResidentIdentityProvider;
 import org.wso2.carbon.identity.provider.internal.dao.IdentityProviderDAO;
 
 import javax.sql.DataSource;
