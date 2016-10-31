@@ -18,6 +18,7 @@
 
 package org.wso2.carbon.identity.provider.dao;
 
+import org.apache.commons.lang3.tuple.Pair;
 import org.h2.jdbcx.JdbcConnectionPool;
 import org.testng.annotations.Test;
 import org.wso2.carbon.identity.provider.common.model.IdentityProvider;
@@ -41,17 +42,34 @@ import static org.testng.Assert.*;
 public class IdentityProviderDAOTest {
 
     @Test
-    public void testGetAllIdentityProviders() throws Exception {
+    public void testListAllIdentityProviders() throws Exception {
         JdbcTemplate jdbcTemplate = getJdbcTemplate();
         IdentityProviderDAO identityProviderDAO = new IdentityProviderDAO();
         identityProviderDAO.setJdbcTemplate(jdbcTemplate);
 
         jdbcTemplate.executeUpdate(
                 "INSERT INTO IDP (NAME, DISPLAY_NAME, DESCRIPTION) VALUES ('No Name', 'No Name', 'No Name')");
-        List<IdentityProvider> identityProviderList = identityProviderDAO.listIdentityProviders(true);
-        assertNotNull(identityProviderList, "The identity Providers shuld not be null");
+        List<Pair<Integer, String>> identityProviderList = identityProviderDAO.listAllIdentityProviders();
+        assertNotNull(identityProviderList, "The identity Providers should not be null");
         assertEquals(identityProviderList.size(), 1);
 
+    }
+
+    @Test
+    public void testListEnabledIdentityProviders() throws Exception {
+        JdbcTemplate jdbcTemplate = getJdbcTemplate();
+        IdentityProviderDAO identityProviderDAO = new IdentityProviderDAO();
+        identityProviderDAO.setJdbcTemplate(jdbcTemplate);
+
+        jdbcTemplate.executeUpdate(
+                "INSERT INTO IDP (NAME, DISPLAY_NAME, DESCRIPTION, IS_ENABLED) VALUES ('No Name', 'No Name', 'No Name', '1')");
+        jdbcTemplate.executeUpdate(
+                "INSERT INTO IDP (NAME, DISPLAY_NAME, DESCRIPTION, IS_ENABLED) VALUES ('No Name2', 'No Name2', 'No Name2', '0')");
+        List<Pair<Integer, String>> identityProviderList = identityProviderDAO.listEnabledIdentityProviders();
+        assertNotNull(identityProviderList, "The identity Providers should not be null");
+        assertEquals(identityProviderList.size(), 1, "There can be only one enabled Identity providers");
+        identityProviderList = identityProviderDAO.listAllIdentityProviders();
+        assertEquals(identityProviderList.size(), 2, "However there are 2 Identity providers");
     }
 
     @Test
@@ -62,13 +80,13 @@ public class IdentityProviderDAOTest {
 
         IdentityProvider identityProvider = createIdentityProvider("Test Name", "Test Label", "Test Desc");
 
-        List<IdentityProvider> identityProviderList = identityProviderDAO.listIdentityProviders(true);
+        List<Pair<Integer, String>> identityProviderList = identityProviderDAO.listAllIdentityProviders();
         assertEquals(identityProviderList.size(), 0, "There are not IdP initially");
 
         int idpId = identityProviderDAO.createIdentityProvider(identityProvider);
         assertNotEquals(idpId, 0, "New IDP should have non zero ID");
 
-        identityProviderList = identityProviderDAO.listIdentityProviders(true);
+        identityProviderList = identityProviderDAO.listAllIdentityProviders();
         assertEquals(identityProviderList.size(), 1, "There should be on IdP after adding");
     }
 

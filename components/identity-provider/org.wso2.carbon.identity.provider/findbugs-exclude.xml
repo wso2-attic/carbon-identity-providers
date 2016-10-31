@@ -21,4 +21,8 @@
     <Match>
         <Class name="org.wso2.carbon.identity.provider.dao.JdbcTemplate"/>
     </Match>
+    <Match>
+        <Class name="org.wso2.carbon.identity.provider.dao.QueryBuilder"/>
+    </Match>
+
 </FindBugsFilter>

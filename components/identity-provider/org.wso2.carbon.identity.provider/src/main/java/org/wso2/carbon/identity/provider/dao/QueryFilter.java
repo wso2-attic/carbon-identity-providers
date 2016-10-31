@@ -34,6 +34,7 @@ import java.sql.SQLException;
  *     });
  * </code>
  */
+@FunctionalInterface
 public interface QueryFilter {
 
     /**

@@ -41,18 +41,34 @@ public class JdbcTemplate {
         this.dataSource = dataSource;
     }
 
+
     /**
      * Executes a query on JDBC and return the result as a list of domain objects.
      *
      * @param query the SQL query with the parameter placeholders.
      * @param rowMapper Row mapper functional interface
-     * @param params parameters for the SQL query parameter replacement.
+     * @return List of domain objects of required type.
+     * @see #executeQuery(String, RowMapper, QueryFilter)
+     */
+    public <T extends Object> List<T> executeQuery(String query, RowMapper<T> rowMapper) {
+        return executeQuery(query, rowMapper, null);
+    }
+
+    /**
+     * Executes a query on JDBC and return the result as a list of domain objects.
+     *
+     * @param query the SQL query with the parameter placeholders.
+     * @param rowMapper Row mapper functional interface
+     * @param queryFilter parameters for the SQL query parameter replacement.
      * @return List of domain objects of required type.
      */
-    public <T extends Object> List<T> executeQuery(String query, RowMapper<T> rowMapper, Object... params) {
+    public <T extends Object> List<T> executeQuery(String query, RowMapper<T> rowMapper, QueryFilter queryFilter) {
         List<T> result = new ArrayList();
         try (Connection connection = dataSource.getConnection();
                 PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+            if(queryFilter != null) {
+                queryFilter.filter(preparedStatement);
+            }
             ResultSet resultSet = preparedStatement.executeQuery();
             int i = 0;
             while (resultSet.next()) {
@@ -61,7 +77,7 @@ public class JdbcTemplate {
                 i++;
             }
         } catch (SQLException e) {
-            logger.error("Error in performing Database query: " + query + "\n parameters " + params);
+            logger.error("Error in performing Database query: " + query + "\n parameters " + queryFilter);
         }
         return result;
     }

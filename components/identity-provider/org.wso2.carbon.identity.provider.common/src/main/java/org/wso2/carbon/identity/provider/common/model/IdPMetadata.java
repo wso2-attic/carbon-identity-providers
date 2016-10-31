@@ -44,10 +44,6 @@ public class IdPMetadata implements Serializable {
     private ClaimConfig claimConfig;
     private RoleConfig roleConfig;
 
-    private IdPMetadata() {
-
-    }
-
     private IdPMetadata(IdPMetadataBuilder builder) {
         this.id = builder.id;
         this.name = builder.name;

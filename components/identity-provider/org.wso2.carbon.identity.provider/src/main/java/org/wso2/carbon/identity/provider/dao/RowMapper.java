@@ -34,6 +34,7 @@ import java.sql.SQLException;
  *
  * @param <T> the type of the domain object.
  */
+@FunctionalInterface
 public interface RowMapper<T extends Object> {
 
     T mapRow(ResultSet resultSet, int rowNumber) throws SQLException;

@@ -18,6 +18,7 @@
 
 package org.wso2.carbon.identity.provider.internal.service;
 
+import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.wso2.carbon.identity.provider.IdentityProviderException;
@@ -47,16 +48,17 @@ public class IdentityProviderServiceImpl implements IdentityProviderService {
 
     @Override
     public List<String> listIdentityProviders() throws IdentityProviderException {
-        return null;
+        List<Pair<Integer, String>> identityProviderList = identityProviderDAO.listAllIdentityProviders();
+        return identityProviderList.stream()
+                .map(pair -> pair.getRight())
+                .collect(Collectors.toList());
     }
 
     @Override
     public List<String> listEnabledIdentityProviders() throws IdentityProviderException {
-        List<IdentityProvider> identityProviderList = identityProviderDAO.listIdentityProviders(true);
-
+        List<Pair<Integer, String>> identityProviderList = identityProviderDAO.listEnabledIdentityProviders();
         return identityProviderList.stream()
-                .filter(identityProvider ->identityProvider.isEnabled())
-                .map(identityProvider -> identityProvider.getIdPMetadata().getName())
+                .map(pair -> pair.getRight())
                 .collect(Collectors.toList());
     }
 
@@ -91,17 +93,17 @@ public class IdentityProviderServiceImpl implements IdentityProviderService {
     }
 
     @Override
-    public IdentityProvider getIdPByProperty(String name, Object value) throws IdentityProviderException {
+    public IdentityProvider getIdPByUniqueProperty(String name, Object value) throws IdentityProviderException {
         return null;
     }
 
     @Override
-    public IdentityProvider getIdPByAuthenticatorProperty(String name, Object value) throws IdentityProviderException {
+    public IdentityProvider getIdPByUniqueAuthenticatorProperty(String name, Object value) throws IdentityProviderException {
         return null;
     }
 
     @Override
-    public IdentityProvider getIdPByProvisionerProperty(String name, Object value) throws IdentityProviderException {
+    public IdentityProvider getIdPByUniqueProvisionerProperty(String name, Object value) throws IdentityProviderException {
         return null;
     }
 

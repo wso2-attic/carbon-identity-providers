@@ -37,8 +37,20 @@ import java.util.Set;
  */
 public interface IdentityProviderService {
 
+    /**
+     * Lists the names of all the Identity Providers.
+     *
+     * @return List<IDP Name>
+     * @throws IdentityProviderException
+     */
     List<String> listIdentityProviders() throws IdentityProviderException;
 
+    /**
+     * Lists the names of all the Identity Providers which are currently enabled.
+     *
+     * @return List<IDP Name>
+     * @throws IdentityProviderException
+     */
     List<String> listEnabledIdentityProviders() throws IdentityProviderException;
 
     /**
@@ -50,15 +62,22 @@ public interface IdentityProviderService {
      */
     int createIdentityProvider(IdentityProvider identityProvider) throws IdentityProviderException;
 
+    /**
+     * Returns the Identity provider given the primary ID of the IDP.
+     *
+     * @param identityProviderId the primary ID.
+     * @return the Identity Provider matches the ID. Null if no Identity provider found for the given ID.
+     * @throws IdentityProviderException
+     */
     IdentityProvider getIdentityProvider(int identityProviderId) throws IdentityProviderException;
 
     IdentityProvider getIdentityProvider(String idPName) throws IdentityProviderException;
 
-    IdentityProvider getIdPByProperty(String name, Object value) throws IdentityProviderException;
+    IdentityProvider getIdPByUniqueProperty(String name, Object value) throws IdentityProviderException;
 
-    IdentityProvider getIdPByAuthenticatorProperty(String name, Object value) throws IdentityProviderException;
+    IdentityProvider getIdPByUniqueAuthenticatorProperty(String name, Object value) throws IdentityProviderException;
 
-    IdentityProvider getIdPByProvisionerProperty(String name, Object value) throws IdentityProviderException;
+    IdentityProvider getIdPByUniqueProvisionerProperty(String name, Object value) throws IdentityProviderException;
 
     void updateIdentityProvider(IdentityProvider identityProvider) throws IdentityProviderException;
 
