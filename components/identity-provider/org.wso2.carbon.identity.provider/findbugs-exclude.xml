@@ -24,5 +24,35 @@
     <Match>
         <Class name="org.wso2.carbon.identity.provider.dao.QueryBuilder"/>
     </Match>
+    <Match>
+        <Class name="org.wso2.carbon.identity.provider.model.IdPMetadata$IdPMetadataBuilder"/>
+    </Match>
+    <Match>
+        <Class name="org.wso2.carbon.identity.provider.model.ProvisionerConfig"/>
+    </Match>
+    <Match>
+        <Class name="org.wso2.carbon.identity.provider.model.IdentityProvider$IdentityProviderBuilder"/>
+    </Match>
+    <Match>
+        <Class name="org.wso2.carbon.identity.provider.model.ProvisionerConfig$ProvisionerConfigBuilder"/>
+    </Match>
+    <Match>
+        <Class name="org.wso2.carbon.identity.provider.model.ResidentIdentityProvider"/>
+    </Match>
+    <Match>
+        <Class name="org.wso2.carbon.identity.provider.model.FederatedIdentityProvider"/>
+    </Match>
+    <Match>
+        <Class name="org.wso2.carbon.identity.provider.model.ProvisioningClaim"/>
+    </Match>
+    <Match>
+        <Class name="org.wso2.carbon.identity.provider.model.ProvisioningClaim$ProvisioningClaimBuilder"/>
+    </Match>
+    <Match>
+        <Class name="org.wso2.carbon.identity.provider.model.AuthenticatorConfig"/>
+    </Match>
+    <Match>
+        <Class name="org.wso2.carbon.identity.provider.model.AuthenticatorConfig$AuthenticatorConfigBuilder"/>
+    </Match>
 
 </FindBugsFilter>

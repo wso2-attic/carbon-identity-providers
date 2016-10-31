@@ -16,18 +16,14 @@
  * under the License.
  */
 
-package org.wso2.carbon.identity.provider.common.model;
+package org.wso2.carbon.identity.provider.model;
 
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.Serializable;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
 
 /**
  * Represent the configurations of an authenticator of IDP.

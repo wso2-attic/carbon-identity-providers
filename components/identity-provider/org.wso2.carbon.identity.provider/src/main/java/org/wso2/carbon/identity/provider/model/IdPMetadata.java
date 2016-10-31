@@ -16,7 +16,7 @@
  * under the License.
  */
 
-package org.wso2.carbon.identity.provider.common.model;
+package org.wso2.carbon.identity.provider.model;
 
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -32,7 +32,9 @@ public class IdPMetadata implements Serializable {
     private static final long serialVersionUID = -4977395047974321120L;
 
     private int id;
+    //Name seen by the admin, when configuring the IDP
     private String name;
+    //Name seen by the end user in login page
     private String displayLabel;
     private String description;
 

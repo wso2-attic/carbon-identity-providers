@@ -16,7 +16,7 @@
  * under the License.
  */
 
-package org.wso2.carbon.identity.provider.common.model;
+package org.wso2.carbon.identity.provider.model;
 
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -28,6 +28,8 @@ import java.util.Map;
 
 /**
  * Abstract representation of an Identity Provider
+ * @see org.wso2.carbon.identity.provider.model.ResidentIdentityProvider
+ * @see org.wso2.carbon.identity.provider.model.FederatedIdentityProvider
  */
 public abstract class IdentityProvider implements Serializable {
 

@@ -23,9 +23,9 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.wso2.carbon.identity.provider.IdentityProviderException;
-import org.wso2.carbon.identity.provider.common.model.IdPMetadata;
-import org.wso2.carbon.identity.provider.common.model.IdentityProvider;
-import org.wso2.carbon.identity.provider.common.model.ResidentIdentityProvider;
+import org.wso2.carbon.identity.provider.model.IdPMetadata;
+import org.wso2.carbon.identity.provider.model.IdentityProvider;
+import org.wso2.carbon.identity.provider.model.ResidentIdentityProvider;
 import org.wso2.carbon.identity.provider.dao.JdbcTemplate;
 
 

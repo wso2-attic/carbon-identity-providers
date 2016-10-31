@@ -16,7 +16,7 @@
  * under the License.
  */
 
-package org.wso2.carbon.identity.provider.common.model;
+package org.wso2.carbon.identity.provider.model;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -33,6 +33,7 @@ public class JITProvisioningConfig implements Serializable {
     private static final long serialVersionUID = -3886962663799281628L;
 
     private boolean jitEnabled;
+    //IDPs list who is provisioning to this IDP.
     private Collection<String> provisioningIdPs = new HashSet<String>();
 
     private JITProvisioningConfig(JITProvisioningConfigBuilder builder) {

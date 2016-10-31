@@ -23,10 +23,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.wso2.carbon.identity.provider.IdentityProviderException;
 import org.wso2.carbon.identity.provider.IdentityProviderService;
-import org.wso2.carbon.identity.provider.common.model.AuthenticationConfig;
-import org.wso2.carbon.identity.provider.common.model.IdPMetadata;
-import org.wso2.carbon.identity.provider.common.model.IdentityProvider;
-import org.wso2.carbon.identity.provider.common.model.ProvisioningConfig;
+import org.wso2.carbon.identity.provider.model.AuthenticationConfig;
+import org.wso2.carbon.identity.provider.model.IdPMetadata;
+import org.wso2.carbon.identity.provider.model.IdentityProvider;
+import org.wso2.carbon.identity.provider.model.ProvisioningConfig;
 import org.wso2.carbon.identity.provider.internal.dao.IdentityProviderDAO;
 
 import java.util.List;

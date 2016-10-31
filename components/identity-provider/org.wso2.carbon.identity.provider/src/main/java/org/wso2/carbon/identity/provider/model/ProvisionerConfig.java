@@ -16,7 +16,7 @@
  * under the License.
  */
 
-package org.wso2.carbon.identity.provider.common.model;
+package org.wso2.carbon.identity.provider.model;
 
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -26,7 +26,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Configuration of an provisioning entity.
+ * Configuration of an outbound provisioning entity.
  */
 public class ProvisionerConfig implements Serializable {
 
@@ -34,6 +34,7 @@ public class ProvisionerConfig implements Serializable {
 
     protected String name;
     protected boolean isEnabled;
+    //Properties of the connector to be used for outbound provisioning
     protected Map<String,Object> properties = new HashMap<>();
 
     private ProvisionerConfig(ProvisionerConfigBuilder builder) {
