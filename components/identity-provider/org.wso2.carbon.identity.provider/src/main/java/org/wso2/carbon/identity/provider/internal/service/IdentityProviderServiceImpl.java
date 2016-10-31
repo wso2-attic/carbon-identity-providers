@@ -54,7 +54,9 @@ public class IdentityProviderServiceImpl implements IdentityProviderService {
     public List<String> listEnabledIdentityProviders() throws IdentityProviderException {
         List<IdentityProvider> identityProviderList = identityProviderDAO.listIdentityProviders(true);
 
-        return identityProviderList.stream().map(identityProvider -> identityProvider.getIdPMetadata().getName())
+        return identityProviderList.stream()
+                .filter(identityProvider ->identityProvider.isEnabled())
+                .map(identityProvider -> identityProvider.getIdPMetadata().getName())
                 .collect(Collectors.toList());
     }
 
