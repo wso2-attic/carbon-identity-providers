@@ -19,18 +19,12 @@
 package org.wso2.carbon.identity.provider;
 
 import org.wso2.carbon.identity.provider.common.model.AuthenticationConfig;
-import org.wso2.carbon.identity.provider.common.model.AuthenticatorConfig;
-import org.wso2.carbon.identity.provider.common.model.ClaimConfig;
 import org.wso2.carbon.identity.provider.common.model.IdPMetadata;
 import org.wso2.carbon.identity.provider.common.model.IdentityProvider;
-import org.wso2.carbon.identity.provider.common.model.ProvisionerConfig;
 import org.wso2.carbon.identity.provider.common.model.ProvisioningConfig;
-import org.wso2.carbon.identity.provider.common.model.ResidentIdentityProvider;
-import org.wso2.carbon.identity.provider.common.model.RoleConfig;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 /**
  * Defines the functionality that should be supported by Identity Provider Service.

@@ -26,7 +26,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Configuration of an provisioning entity.
+ * Configuration of an outbound provisioning entity.
  */
 public class ProvisionerConfig implements Serializable {
 
@@ -34,6 +34,7 @@ public class ProvisionerConfig implements Serializable {
 
     protected String name;
     protected boolean isEnabled;
+    //Properties of the connector to be used for outbound provisioning
     protected Map<String,Object> properties = new HashMap<>();
 
     private ProvisionerConfig(ProvisionerConfigBuilder builder) {

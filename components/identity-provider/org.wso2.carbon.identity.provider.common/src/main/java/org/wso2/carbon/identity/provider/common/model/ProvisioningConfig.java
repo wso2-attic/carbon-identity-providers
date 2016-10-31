@@ -27,6 +27,7 @@ public class ProvisioningConfig {
 
     private JITProvisioningConfig jitProvisioningConfig;
     private Collection<ProvisioningClaim> provisioningClaims = new HashSet<ProvisioningClaim>();
+    //ToDO This might be removed in the future. Kept for the moment as a triggering mechanism for provisioning
     private Collection<String> provisioningRoles = new HashSet<>();
     private Collection<ProvisionerConfig> provisioners = new HashSet<ProvisionerConfig>();
 

@@ -33,6 +33,7 @@ public class JITProvisioningConfig implements Serializable {
     private static final long serialVersionUID = -3886962663799281628L;
 
     private boolean jitEnabled;
+    //IDPs list who is provisioning to this IDP.
     private Collection<String> provisioningIdPs = new HashSet<String>();
 
     private JITProvisioningConfig(JITProvisioningConfigBuilder builder) {

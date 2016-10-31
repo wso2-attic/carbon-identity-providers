@@ -28,6 +28,8 @@ import java.util.Map;
 
 /**
  * Abstract representation of an Identity Provider
+ * @see org.wso2.carbon.identity.provider.common.model.ResidentIdentityProvider
+ * @see org.wso2.carbon.identity.provider.common.model.FederatedIdentityProvider
  */
 public abstract class IdentityProvider implements Serializable {
 
