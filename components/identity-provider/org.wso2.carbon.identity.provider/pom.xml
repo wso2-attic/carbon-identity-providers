@@ -118,7 +118,7 @@
 
     <properties>
         <mavan.findbugsplugin.exclude.file>findbugs-exclude.xml</mavan.findbugsplugin.exclude.file>
-        <maven.checkstyleplugin.excludes>org/wso2/carbon/identity/**/*</maven.checkstyleplugin.excludes>
+        <!--<maven.checkstyleplugin.excludes>org/wso2/carbon/identity/**/*</maven.checkstyleplugin.excludes>-->
         <private.package>org.wso2.carbon.identity.provider.internal</private.package>
         <export.package>
             !org.wso2.carbon.identity.provider.internal,

@@ -19,7 +19,6 @@
 
 <FindBugsFilter>
     <Match>
-        <Package name="~org\.wso2\.carbon\.identity\.provider\..*"/>
+        <Class name="org.wso2.carbon.identity.provider.dao.JdbcTemplate"/>
     </Match>
-
 </FindBugsFilter>

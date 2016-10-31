@@ -50,7 +50,7 @@ public class IdentityProviderServiceComponent {
     private JdbcTemplate jdbcTemplate;
 
     @Activate
-    private void activate(ComponentContext componentContext, BundleContext bundleContext, Map<String, ?> properties) {
+    public void activate(ComponentContext componentContext, BundleContext bundleContext, Map<String, ?> properties) {
         identityProviderService = new IdentityProviderServiceImpl();
         identityProviderServiceRegistration = bundleContext
                 .registerService(IdentityProviderService.class.getName(), identityProviderService, null);
@@ -60,7 +60,7 @@ public class IdentityProviderServiceComponent {
     }
 
     @Deactivate
-    private void deactivate(ComponentContext componentContext, BundleContext bundleContext, Map<String, ?> properties,
+    public void deactivate(ComponentContext componentContext, BundleContext bundleContext, Map<String, ?> properties,
             int reason) {
 
         if (identityProviderServiceRegistration != null) {
@@ -95,7 +95,7 @@ public class IdentityProviderServiceComponent {
     }
 
     protected void onJNDIUnregister(JNDIContextManager jndiContextManager) {
-        logger.info("Unregistering data sources");
+        logger.info("Un-registering data sources");
     }
 
     private void initializeDao(JdbcTemplate jdbcTemplate) {
