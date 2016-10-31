@@ -41,6 +41,13 @@ public interface IdentityProviderService {
 
     List<String> listEnabledIdentityProviders() throws IdentityProviderException;
 
+    /**
+     * Creates the Identity provider and returns the primary ID.
+     *
+     * @param identityProvider
+     * @return
+     * @throws IdentityProviderException when there is any error in creating the Identity Provider
+     */
     int createIdentityProvider(IdentityProvider identityProvider) throws IdentityProviderException;
 
     IdentityProvider getIdentityProvider(int identityProviderId) throws IdentityProviderException;

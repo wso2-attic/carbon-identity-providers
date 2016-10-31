@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016 WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+ * Copyright (c) 2016, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
  *
  * WSO2 Inc. licenses this file to you under the Apache License,
  * Version 2.0 (the "License"); you may not use this file except
@@ -16,22 +16,24 @@
  * under the License.
  */
 
-package org.wso2.carbon.identity.provider;
+package org.wso2.carbon.identity.provider.internal.service;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.wso2.carbon.identity.provider.common.model.IdPMetadata;
+import org.wso2.carbon.identity.provider.IdentityProviderException;
+import org.wso2.carbon.identity.provider.IdentityProviderService;
 import org.wso2.carbon.identity.provider.common.model.AuthenticationConfig;
+import org.wso2.carbon.identity.provider.common.model.IdPMetadata;
 import org.wso2.carbon.identity.provider.common.model.IdentityProvider;
 import org.wso2.carbon.identity.provider.common.model.ProvisioningConfig;
-import org.wso2.carbon.identity.provider.dao.IdentityProviderDAO;
+import org.wso2.carbon.identity.provider.internal.dao.IdentityProviderDAO;
 
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
- * Default implementation of Identity Prvider Service.
+ * Default implementation of Identity Provider Service.
  */
 public class IdentityProviderServiceImpl implements IdentityProviderService {
 
@@ -52,38 +54,35 @@ public class IdentityProviderServiceImpl implements IdentityProviderService {
     public List<String> listEnabledIdentityProviders() throws IdentityProviderException {
         List<IdentityProvider> identityProviderList = identityProviderDAO.listIdentityProviders(true);
 
-        return identityProviderList.stream().map(
-                identityProvider -> identityProvider.getIdPMetadata().getName())
-                .collect(
-                    Collectors.toList()
-        );
+        return identityProviderList.stream().map(identityProvider -> identityProvider.getIdPMetadata().getName())
+                .collect(Collectors.toList());
     }
 
     @Override
     public int createIdentityProvider(IdentityProvider identityProvider) throws IdentityProviderException {
-        return 0;
+        return identityProviderDAO.createIdentityProvider(identityProvider);
     }
 
     @Override
     public IdentityProvider getIdentityProvider(int identityProviderId) throws IdentityProviderException {
-        return null;
+        return identityProviderDAO.getIdentityProvider(identityProviderId);
     }
 
     @Override
     public IdentityProvider getIdentityProvider(String idPName) throws IdentityProviderException {
-        List<IdentityProvider> identityProviderList =  identityProviderDAO.listIdentityProviderByName(idPName);
+        List<IdentityProvider> identityProviderList = identityProviderDAO.listIdentityProviderByName(idPName);
 
-        if(identityProviderList.size() > 0) {
-            if(identityProviderList.size() >1) {
-                if(log.isDebugEnabled()) {
+        if (identityProviderList.size() > 0) {
+            if (identityProviderList.size() > 1) {
+                if (log.isDebugEnabled()) {
                     log.debug("There was {} number of IDP match for the IDP name : {}. Returning the first one",
                             identityProviderList.size(), idPName);
                 }
             }
             return identityProviderList.get(0);
         } else {
-            if(log.isDebugEnabled()) {
-                log.debug("Could not find an IDP with name : "+idPName);
+            if (log.isDebugEnabled()) {
+                log.debug("Could not find an IDP with name : " + idPName);
             }
         }
         return null;
