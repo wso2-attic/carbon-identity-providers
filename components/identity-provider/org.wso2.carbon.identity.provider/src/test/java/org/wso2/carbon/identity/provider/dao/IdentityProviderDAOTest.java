@@ -21,9 +21,9 @@ package org.wso2.carbon.identity.provider.dao;
 import org.apache.commons.lang3.tuple.Pair;
 import org.h2.jdbcx.JdbcConnectionPool;
 import org.testng.annotations.Test;
+import org.wso2.carbon.identity.provider.internal.dao.IdentityProviderDAO;
 import org.wso2.carbon.identity.provider.model.IdentityProvider;
 import org.wso2.carbon.identity.provider.model.ResidentIdentityProvider;
-import org.wso2.carbon.identity.provider.internal.dao.IdentityProviderDAO;
 
 import javax.sql.DataSource;
 import java.io.BufferedReader;
@@ -36,7 +36,11 @@ import java.sql.Statement;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static org.testng.Assert.*;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertNotEquals;
+import static org.testng.Assert.assertNotNull;
+import static org.testng.Assert.assertNull;
+import static org.testng.Assert.fail;
 
 @Test
 public class IdentityProviderDAOTest {
@@ -121,6 +125,44 @@ public class IdentityProviderDAOTest {
 
         IdentityProvider identityProvider3 = identityProviderDAO.getIdentityProvider("Test Name-Not Exists");
         assertNull(identityProvider3, "Non existing record needs to return null");
+    }
+
+    //    @Test
+    //    public void testDisableIdentityProvider() throws Exception {
+    //        JdbcTemplate jdbcTemplate = getJdbcTemplate();
+    //        IdentityProviderDAO identityProviderDAO = new IdentityProviderDAO();
+    //        identityProviderDAO.setJdbcTemplate(jdbcTemplate);
+    //
+    //        createIdentityProvider("TestName2", "Test Label", "Test Desc");
+    //
+    //        identityProviderDAO.disableIdentityProvider("TestName2");
+    //
+    //        IdentityProvider identityProvider2 = identityProviderDAO.getIdentityProvider("TestName2");
+    //        assertFalse(identityProvider2.isEnabled(), "Identity provider should have been disabled.");
+    //    }
+
+    @Test
+    public void testDeleteIdentityProvider_String() throws Exception {
+        JdbcTemplate jdbcTemplate = getJdbcTemplate();
+        IdentityProviderDAO identityProviderDAO = new IdentityProviderDAO();
+        identityProviderDAO.setJdbcTemplate(jdbcTemplate);
+
+        identityProviderDAO.deleteIdentityProvider("Test Name");
+
+        IdentityProvider identityProvider = identityProviderDAO.getIdentityProvider("Test Name");
+        assertNull(identityProvider, "Non existing record needs to return null");
+    }
+
+    @Test
+    public void testDeleteIdentityProvider_int() throws Exception {
+        JdbcTemplate jdbcTemplate = getJdbcTemplate();
+        IdentityProviderDAO identityProviderDAO = new IdentityProviderDAO();
+        identityProviderDAO.setJdbcTemplate(jdbcTemplate);
+
+        identityProviderDAO.deleteIdentityProvider(1);
+
+        IdentityProvider identityProvider = identityProviderDAO.getIdentityProvider("Test Name");
+        assertNull(identityProvider, "Non existing record needs to return null");
     }
 
     private IdentityProvider createIdentityProvider(String name, String label, String description) {

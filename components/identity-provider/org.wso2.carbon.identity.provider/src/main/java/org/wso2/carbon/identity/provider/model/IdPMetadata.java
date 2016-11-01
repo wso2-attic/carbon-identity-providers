@@ -37,6 +37,7 @@ public class IdPMetadata implements Serializable {
     //Name seen by the end user in login page
     private String displayLabel;
     private String description;
+    //ToDO homeRealmId, federation hub
 
     // idp:cert -> 1..n
     // certs must be managed in keystore component
