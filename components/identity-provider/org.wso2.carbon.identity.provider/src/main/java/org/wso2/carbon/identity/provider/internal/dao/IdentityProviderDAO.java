@@ -270,4 +270,24 @@ public class IdentityProviderDAO {
 
         return identityProviderId;
     }
+
+    public void updateIdentityProviderMetaData(IdPMetadata idPMetadata) throws IdentityProviderException {
+        final String UPDATE_IDP_METADATA_SQL =
+                "INSERT INTO IDP (NAME, DISPLAY_NAME, DESCRIPTION, HOME_REALM_ID) " + "VALUES(?,?,?)";
+
+        try {
+            this.jdbcTemplate.executeUpdate(UPDATE_IDP_METADATA_SQL, preparedStatement -> {
+                preparedStatement.setString(1, idPMetadata.getName());
+                preparedStatement.setString(2, idPMetadata.getDisplayLabel());
+                preparedStatement.setString(3, idPMetadata.getDescription());
+                preparedStatement.setString(4, idPMetadata.getHomeRealmId());
+                preparedStatement.setBoolean(5, idPMetadata.isFederationHub());
+            });
+        } catch (DataAccessException e) {
+            throw new IdentityProviderException(
+                    "Error occurred updating meta data for the Identity provider by the given Name: " + idPMetadata
+                            .getName(), e);
+        }
+
+    }
 }

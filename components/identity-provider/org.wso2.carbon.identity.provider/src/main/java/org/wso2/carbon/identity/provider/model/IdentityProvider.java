@@ -120,6 +120,16 @@ public abstract class IdentityProvider implements Serializable {
             return this;
         }
 
+        public IdentityProviderBuilder setHomeRealmId(String homeRealmId) {
+            this.idPMetadataBuilder.setHomeRealmId(homeRealmId);
+            return this;
+        }
+
+        public IdentityProviderBuilder setIsFederationHub(Boolean isFederationHub) {
+            this.idPMetadataBuilder.setIsFederationHub(isFederationHub);
+            return this;
+        }
+
         public IdentityProviderBuilder addCert(String alias, String thumbPrint) {
             this.idPMetadataBuilder.addCert(alias, thumbPrint);
             return this;
