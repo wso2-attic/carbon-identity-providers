@@ -41,7 +41,7 @@ public abstract class IdentityProvider implements Serializable {
     private ProvisioningConfig provisioningConfig;
 
     /**
-     * IDP properties are that...
+     * IDP properties are that are not first class details of every identity providers, but other related required details
      * Map<Emp_Id, Name>
      */
     private Map<String,Object> properties = new HashMap<>();
