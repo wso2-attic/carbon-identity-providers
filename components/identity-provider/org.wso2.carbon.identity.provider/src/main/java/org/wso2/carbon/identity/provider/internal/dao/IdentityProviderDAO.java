@@ -23,6 +23,7 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.wso2.carbon.identity.provider.IdentityProviderException;
+import org.wso2.carbon.identity.provider.dao.DataAccessException;
 import org.wso2.carbon.identity.provider.dao.JdbcTemplate;
 import org.wso2.carbon.identity.provider.model.IdPMetadata;
 import org.wso2.carbon.identity.provider.model.IdentityProvider;
@@ -50,16 +51,22 @@ public class IdentityProviderDAO {
      * @throws IdentityProviderException when any database level exception occurs.
      */
     public int createIdentityProvider(IdentityProvider identityProvider) throws IdentityProviderException {
-        final String INSERT_IDP_SQL = "INSERT INTO IDP (NAME, DISPLAY_NAME, DESCRIPTION) "
-                + "VALUES(?,?,?)";
+        final String INSERT_IDP_SQL = "INSERT INTO IDP (NAME, DISPLAY_NAME, DESCRIPTION) " + "VALUES(?,?,?)";
 
-        int insertedId = this.jdbcTemplate.executeInsert(INSERT_IDP_SQL, (preparedStatement, bean) -> {
-            IdPMetadata idPMetadata = identityProvider.getIdPMetadata();
-            preparedStatement.setString(1, idPMetadata.getName());
-            preparedStatement.setString(2, idPMetadata.getDisplayLabel());
-            preparedStatement.setString(3, idPMetadata.getDescription());
+        int insertedId = 0;
+        try {
+            insertedId = this.jdbcTemplate.executeInsert(INSERT_IDP_SQL, (preparedStatement) -> {
+                IdPMetadata idPMetadata = identityProvider.getIdPMetadata();
+                preparedStatement.setString(1, idPMetadata.getName());
+                preparedStatement.setString(2, idPMetadata.getDisplayLabel());
+                preparedStatement.setString(3, idPMetadata.getDescription());
 
-        }, identityProvider, true);
+            }, identityProvider, true);
+        } catch (DataAccessException e) {
+            throw new IdentityProviderException(
+                    "Error occurred in inserting new Identity Provider with name " + identityProvider.getIdPMetadata()
+                            .getName(), e);
+        }
 
         return insertedId;
     }
@@ -74,9 +81,13 @@ public class IdentityProviderDAO {
 
         final String GET_ALL_IDP_SQL = "SELECT ID, NAME FROM IDP";
 
-        List<Pair<Integer, String>> idpList = this.jdbcTemplate.executeQuery(GET_ALL_IDP_SQL, (resultSet, rowNumber) ->
-                ImmutablePair.of(resultSet.getInt(1), resultSet.getString(2))
-        );
+        List<Pair<Integer, String>> idpList = null;
+        try {
+            idpList = this.jdbcTemplate.executeQuery(GET_ALL_IDP_SQL,
+                    (resultSet, rowNumber) -> ImmutablePair.of(resultSet.getInt(1), resultSet.getString(2)));
+        } catch (DataAccessException e) {
+            throw new IdentityProviderException("Error occurred in listing all the Identity providers ", e);
+        }
 
         return idpList;
     }
@@ -91,40 +102,56 @@ public class IdentityProviderDAO {
 
         final String GET_ALL_IDP_SQL = "SELECT ID, NAME FROM IDP WHERE IS_ENABLED=?";
 
-        List<Pair<Integer, String>> idpList = this.jdbcTemplate.executeQuery(GET_ALL_IDP_SQL,
-                (resultSet, rowNumber) -> ImmutablePair.of(resultSet.getInt(1), resultSet.getString(2)),
-                (preparedStatement -> preparedStatement.setBoolean(1, true))
-        );
+        List<Pair<Integer, String>> idpList = null;
+        try {
+            idpList = this.jdbcTemplate.executeQuery(GET_ALL_IDP_SQL,
+                    (resultSet, rowNumber) -> ImmutablePair.of(resultSet.getInt(1), resultSet.getString(2)),
+                    (preparedStatement -> preparedStatement.setBoolean(1, true)));
+        } catch (DataAccessException e) {
+            throw new IdentityProviderException("Error occurred in listing 'Enabled' the Identity providers ", e);
+        }
 
         return idpList;
     }
 
-    public IdentityProvider getIdentityProvider(int identityProviderId) {
+    public IdentityProvider getIdentityProvider(int identityProviderId) throws IdentityProviderException {
         final String GET_ALL_IDP_SQL = "SELECT ID, NAME, DISPLAY_NAME, DESCRIPTION, "
                 + "IS_FEDERATION_HUB, IS_LOCAL_CLAIM_DIALECT, IS_ENABLED, ID FROM IDP WHERE ID=?";
 
-        IdentityProvider identityProvider = this.jdbcTemplate.fetchSingleRecord(GET_ALL_IDP_SQL, (resultSet, rowNumber) -> {
-            IdentityProvider.IdentityProviderBuilder identityProviderBuilder = ResidentIdentityProvider
-                    .newBuilder(resultSet.getInt("ID"), resultSet.getString("NAME"));
-            return identityProviderBuilder.build();
-        },(preparedStatement) -> {
-            preparedStatement.setInt(1, identityProviderId);
-        });
+        IdentityProvider identityProvider = null;
+        try {
+            identityProvider = this.jdbcTemplate.fetchSingleRecord(GET_ALL_IDP_SQL, (resultSet, rowNumber) -> {
+                IdentityProvider.IdentityProviderBuilder identityProviderBuilder = ResidentIdentityProvider
+                        .newBuilder(resultSet.getInt("ID"), resultSet.getString("NAME"));
+                return identityProviderBuilder.build();
+            }, (preparedStatement) -> {
+                preparedStatement.setInt(1, identityProviderId);
+            });
+        } catch (DataAccessException e) {
+            throw new IdentityProviderException(
+                    "Error occurred retrieving the Identity provider by the given ID: " + identityProviderId, e);
+        }
 
         return identityProvider;
     }
 
-    public IdentityProvider getIdentityProvider(String identityProviderName) {
+    public IdentityProvider getIdentityProvider(String identityProviderName) throws IdentityProviderException {
         final String GET_ALL_IDP_SQL = "SELECT ID, NAME, DISPLAY_NAME, DESCRIPTION, "
                 + "IS_FEDERATION_HUB, IS_LOCAL_CLAIM_DIALECT, IS_ENABLED, ID FROM IDP WHERE NAME=?";
 
-        IdentityProvider identityProvider = this.jdbcTemplate.fetchSingleRecord(GET_ALL_IDP_SQL, (resultSet, rowNumber) -> {
-            IdentityProvider.IdentityProviderBuilder identityProviderBuilder = ResidentIdentityProvider
-                    .newBuilder(resultSet.getInt("ID"), resultSet.getString("NAME"));
-            return identityProviderBuilder.build();
-        },(preparedStatement) -> {
-            preparedStatement.setString(1, identityProviderName);
-        });
+        IdentityProvider identityProvider = null;
+        try {
+            identityProvider = this.jdbcTemplate.fetchSingleRecord(GET_ALL_IDP_SQL, (resultSet, rowNumber) -> {
+                IdentityProvider.IdentityProviderBuilder identityProviderBuilder = ResidentIdentityProvider
+                        .newBuilder(resultSet.getInt("ID"), resultSet.getString("NAME"));
+                return identityProviderBuilder.build();
+            }, (preparedStatement) -> {
+                preparedStatement.setString(1, identityProviderName);
+            });
+        } catch (DataAccessException e) {
+            throw new IdentityProviderException(
+                    "Error occurred retrieving the Identity provider by the given Name: " + identityProviderName, e);
+        }
 
         return identityProvider;
     }
@@ -133,61 +160,114 @@ public class IdentityProviderDAO {
         return null;
     }
 
-    public void deleteIdentityProvider(int identityProviderId) {
+    public void deleteIdentityProvider(int identityProviderId) throws IdentityProviderException {
         final String DELETE_IDP_SQL = "DELETE FROM IDP WHERE ID=?";
-        this.jdbcTemplate.executeUpdate(DELETE_IDP_SQL, identityProviderId);
+        try {
+            this.jdbcTemplate.executeUpdate(DELETE_IDP_SQL, preparedStatement -> {
+                preparedStatement.setInt(1, identityProviderId);
+            });
+        } catch (DataAccessException e) {
+            throw new IdentityProviderException(
+                    "Error occurred deleting the Identity provider by the given ID: " + identityProviderId, e);
+        }
     }
 
-    public void deleteIdentityProvider(String identityProviderName) {
+    public void deleteIdentityProvider(String identityProviderName) throws IdentityProviderException {
         final String DELETE_IDP_SQL = "DELETE FROM IDP WHERE NAME=?";
-        this.jdbcTemplate.executeUpdate(DELETE_IDP_SQL, identityProviderName);
+        try {
+            this.jdbcTemplate.executeUpdate(DELETE_IDP_SQL, (preparedStatement -> {
+                preparedStatement.setString(1, identityProviderName);
+            }));
+        } catch (DataAccessException e) {
+            throw new IdentityProviderException(
+                    "Error occurred deleting the Identity provider by the given ID: " + identityProviderName, e);
+        }
     }
 
-    public void enableIdentityProvider(int identityProviderId){
+    public void enableIdentityProvider(int identityProviderId) throws IdentityProviderException {
         final String ENABLE_IDP_SQL = "UPDATE IDP SET IS_ENABLED=? WHERE ID=?";
-        this.jdbcTemplate.executeUpdate(ENABLE_IDP_SQL, 1, identityProviderId);
+        try {
+            this.jdbcTemplate.executeUpdate(ENABLE_IDP_SQL, preparedStatement -> {
+                preparedStatement.setString(1, "1");
+                preparedStatement.setInt(1, identityProviderId);
+            });
+        } catch (DataAccessException e) {
+            throw new IdentityProviderException(
+                    "Error occurred \"Enabling\" the Identity provider by the given ID: " + identityProviderId, e);
+        }
     }
 
-    public void disableIdentityProvider(int identityProviderId){
+    public void disableIdentityProvider(int identityProviderId) throws IdentityProviderException {
         final String DISABLE_IDP_SQL = "UPDATE IDP SET IS_ENABLED=? WHERE ID=?";
-        this.jdbcTemplate.executeUpdate(DISABLE_IDP_SQL, 0, identityProviderId);
+        try {
+            this.jdbcTemplate.executeUpdate(DISABLE_IDP_SQL, preparedStatement -> {
+                preparedStatement.setString(1, "0");
+                preparedStatement.setInt(1, identityProviderId);
+            });
+        } catch (DataAccessException e) {
+            throw new IdentityProviderException(
+                    "Error occurred \"Disabling\" the Identity provider by the given ID: " + identityProviderId, e);
+        }
 
     }
 
-    public void enableIdentityProvider(String identityProviderName){
+    public void enableIdentityProvider(String identityProviderName) throws IdentityProviderException {
         final String ENABLE_IDP_SQL = "UPDATE IDP SET IS_ENABLED=? WHERE ID=?";
-        this.jdbcTemplate.executeUpdate(ENABLE_IDP_SQL, 1, identityProviderName);
+        try {
+            this.jdbcTemplate.executeUpdate(ENABLE_IDP_SQL, preparedStatement -> {
+                preparedStatement.setString(1, "1");
+                preparedStatement.setString(1, identityProviderName);
+            });
+        } catch (DataAccessException e) {
+            throw new IdentityProviderException(
+                    "Error occurred \"Enabling\" the Identity provider by the given Name: " + identityProviderName, e);
+        }
     }
 
-    public void disableIdentityProvider(String identityProviderName){
+    public void disableIdentityProvider(String identityProviderName) throws IdentityProviderException {
         final String DISABLE_IDP_SQL = "UPDATE IDP SET IS_ENABLED=? WHERE ID=?";
-        this.jdbcTemplate.executeUpdate(DISABLE_IDP_SQL, 0, identityProviderName);
+        try {
+            this.jdbcTemplate.executeUpdate(DISABLE_IDP_SQL, preparedStatement -> {
+                preparedStatement.setString(1, "1");
+                preparedStatement.setString(1, identityProviderName);
+            });
+        } catch (DataAccessException e) {
+            throw new IdentityProviderException(
+                    "Error occurred \"Disabling\" the Identity provider by the given Name: " + identityProviderName, e);
+        }
 
     }
 
-    public String getIdPNameById(int idpId){
+    public String getIdPNameById(int idpId) throws IdentityProviderException {
         final String GET_IDP_NAME_BY_ID_SQL = "SELECT NAME FROM IDP WHERE ID=?";
 
-        String identityProviderName = this.jdbcTemplate.fetchSingleRecord(GET_IDP_NAME_BY_ID_SQL,
-                (resultSet, rowNumber) -> resultSet.getString("NAME"),
-                (preparedStatement -> preparedStatement.setInt(1, idpId))
-        );
+        String identityProviderName = null;
+        try {
+            identityProviderName = this.jdbcTemplate
+                    .fetchSingleRecord(GET_IDP_NAME_BY_ID_SQL, (resultSet, rowNumber) -> resultSet.getString("NAME"),
+                            (preparedStatement -> preparedStatement.setInt(1, idpId)));
+        } catch (DataAccessException e) {
+            throw new IdentityProviderException("Error retrieving the Identity provider Name by the given ID: " + idpId,
+                    e);
+        }
 
         return identityProviderName;
 
     }
 
-    public int getIdPIdByName(String idpName){
+    public int getIdPIdByName(String idpName) throws IdentityProviderException {
         final String GET_IDP_ID_BY_NAME_SQL = "SELECT ID FROM IDP WHERE NAME=?";
 
-        int identityProviderId = this.jdbcTemplate.fetchSingleRecord(GET_IDP_ID_BY_NAME_SQL,
-                (resultSet, rowNumber) -> resultSet.getInt("Id"),
-                (preparedStatement -> preparedStatement.setString(1, idpName))
-        );
+        int identityProviderId = 0;
+        try {
+            identityProviderId = this.jdbcTemplate
+                    .fetchSingleRecord(GET_IDP_ID_BY_NAME_SQL, (resultSet, rowNumber) -> resultSet.getInt("Id"),
+                            (preparedStatement -> preparedStatement.setString(1, idpName)));
+        } catch (DataAccessException e) {
+            throw new IdentityProviderException(
+                    "Error retrieving the Identity provider ID by the given Name: " + idpName, e);
+        }
 
         return identityProviderId;
-
-
     }
-
 }

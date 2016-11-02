@@ -20,6 +20,7 @@ package org.wso2.carbon.identity.provider.dao;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.slf4j.helpers.MessageFormatter;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
@@ -41,7 +42,6 @@ public class JdbcTemplate {
         this.dataSource = dataSource;
     }
 
-
     /**
      * Executes a query on JDBC and return the result as a list of domain objects.
      *
@@ -50,7 +50,7 @@ public class JdbcTemplate {
      * @return List of domain objects of required type.
      * @see #executeQuery(String, RowMapper, QueryFilter)
      */
-    public <T extends Object> List<T> executeQuery(String query, RowMapper<T> rowMapper) {
+    public <T extends Object> List<T> executeQuery(String query, RowMapper<T> rowMapper) throws DataAccessException {
         return executeQuery(query, rowMapper, null);
     }
 
@@ -62,11 +62,12 @@ public class JdbcTemplate {
      * @param queryFilter parameters for the SQL query parameter replacement.
      * @return List of domain objects of required type.
      */
-    public <T extends Object> List<T> executeQuery(String query, RowMapper<T> rowMapper, QueryFilter queryFilter) {
+    public <T extends Object> List<T> executeQuery(String query, RowMapper<T> rowMapper, QueryFilter queryFilter)
+            throws DataAccessException {
         List<T> result = new ArrayList();
         try (Connection connection = dataSource.getConnection();
                 PreparedStatement preparedStatement = connection.prepareStatement(query)) {
-            if(queryFilter != null) {
+            if (queryFilter != null) {
                 queryFilter.filter(preparedStatement);
             }
             ResultSet resultSet = preparedStatement.executeQuery();
@@ -77,7 +78,10 @@ public class JdbcTemplate {
                 i++;
             }
         } catch (SQLException e) {
-            logger.error("Error in performing Database query: " + query + "\n parameters " + queryFilter);
+            logDebugInfo(
+                    "There has been an error performing the database query. The query is {}, and the Parameters are {}",
+                    e, query, queryFilter);
+            throw new DataAccessException("Error in performing Database query: " + query, e);
         }
         return result;
     }
@@ -87,39 +91,45 @@ public class JdbcTemplate {
      *
      * @param query the SQL query with the parameter placeholders.
      * @param rowMapper Row mapper functional interface
-     * @param filter parameters for the SQL query parameter replacement.
+     * @param queryFilter parameters for the SQL query parameter replacement.
      * @return domain object of required type.
      */
-    public <T extends Object> T fetchSingleRecord(String query, RowMapper<T> rowMapper, QueryFilter filter) {
+    public <T extends Object> T fetchSingleRecord(String query, RowMapper<T> rowMapper, QueryFilter queryFilter)
+            throws DataAccessException {
         T result = null;
         try (Connection connection = dataSource.getConnection();
                 PreparedStatement preparedStatement = connection.prepareStatement(query)) {
-            if(filter != null) {
-                filter.filter(preparedStatement);
+            if (queryFilter != null) {
+                queryFilter.filter(preparedStatement);
             }
             ResultSet resultSet = preparedStatement.executeQuery();
             if (resultSet.next()) {
                 result = rowMapper.mapRow(resultSet, 0);
             }
-            if(resultSet.next()) {
-                logger.error("There are more records than one found for query: {} , \n parameters: {}", query, filter);
+            if (resultSet.next()) {
+                logDebugInfo("There are more records than one found for query: {} for the parameters {}", query,
+                        queryFilter);
+                throw new DataAccessException("There are more records than one found for query: " + query);
             }
         } catch (SQLException e) {
-            logger.error("Error in performing Database query: {} :\n {}parameters", query, filter);
+            logDebugInfo(
+                    "There has been an error performing the database query. The query is {}, and the parameters are {}",
+                    e, query, rowMapper, queryFilter);
+            throw new DataAccessException("Error in performing database query: " + query, e);
         }
         return result;
     }
 
-    public void executeUpdate(String query, Object... params) {
+    public void executeUpdate(String query, QueryFilter queryFilter) throws DataAccessException {
         try (Connection connection = dataSource.getConnection();
                 PreparedStatement preparedStatement = connection.prepareStatement(query)) {
-            if (params != null) {
-                int i = 1;
-
+            if (queryFilter != null) {
+                queryFilter.filter(preparedStatement);
             }
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
-            logger.error("Error in performing Database update: " + query + "\n params " + params);
+            logDebugInfo("Error in performing database update: {} with parameters {}", query, queryFilter);
+            throw new DataAccessException("Error in performing database update: " + query, e);
         }
     }
 
@@ -127,56 +137,70 @@ public class JdbcTemplate {
      * Executes the jdbc insert/update query.
      *
      * @param query The SQL for insert/update.
-     * @param rowExtractor Domain object (bean) to prepared statement parameter binding.
-     * @param bean the Domain object to be inserted/updated.
      * @param <T>
      */
-    public <T extends Object> void executeUpdate(String query, RowExtractor<T> rowExtractor, T bean) {
+    public <T extends Object> void executeUpdate(String query) throws DataAccessException {
         try (Connection connection = dataSource.getConnection();
                 PreparedStatement preparedStatement = connection.prepareStatement(query)) {
-            doInternalUpdate(rowExtractor, bean, preparedStatement);
+            doInternalUpdate(null, preparedStatement);
         } catch (SQLException e) {
-            logger.error("Error in performing Database update: " + query + "\n bean " + bean);
+            logDebugInfo("Error in performing database update: {}", query);
+            throw new DataAccessException("Error in performing database update: " + query, e);
         }
-    }
-
-    private <T extends Object> void doInternalUpdate(RowExtractor<T> rowExtractor, T bean,
-            PreparedStatement preparedStatement) throws SQLException {
-        if (bean != null && rowExtractor != null) {
-            rowExtractor.extract(preparedStatement, bean);
-        } else {
-            logger.error("Error in performing Database Row Extractor: " + rowExtractor + "\n bean " + bean);
-        }
-        preparedStatement.executeUpdate();
     }
 
     /**
      * Executes the jdbc insert/update query.
      *
      * @param query The SQL for insert/update.
-     * @param rowExtractor Domain object (bean) to prepared statement parameter binding.
+     * @param queryFilter Query filter to prepared statement parameter binding.
      * @param bean the Domain object to be inserted/updated.
      * @param <T>
      */
-    public <T extends Object> int executeInsert(String query, RowExtractor<T> rowExtractor, T bean, boolean fetchInsertedId) {
+    public <T extends Object> int executeInsert(String query, QueryFilter queryFilter, T bean, boolean fetchInsertedId)
+            throws DataAccessException {
         try (Connection connection = dataSource.getConnection();
                 PreparedStatement preparedStatement = connection.prepareStatement(query)) {
-            doInternalUpdate(rowExtractor, bean, preparedStatement);
-            if(fetchInsertedId) {
-                if(logger.isDebugEnabled()) {
+            doInternalUpdate(queryFilter, preparedStatement);
+            if (fetchInsertedId) {
+                if (logger.isDebugEnabled()) {
                     logger.debug("Mapping generated key (Auto Increment ID) to the object");
                 }
                 try (ResultSet generatedKeys = preparedStatement.getGeneratedKeys()) {
                     if (generatedKeys.next()) {
-                        return generatedKeys.getInt(1);
+                        int resultId = generatedKeys.getInt(1);
+                        if (logger.isDebugEnabled()) {
+                            logger.debug("Newly inserted ID (Auto Increment ID) is {} for the bean {} ",
+                                    resultId, bean);
+                        }
+                        return resultId;
                     } else {
-                        throw new SQLException("Creating user failed, no ID obtained.");
+                        throw new SQLException("Creating the record failed with Auto-Generated ID, no ID obtained.");
                     }
                 }
             }
         } catch (SQLException e) {
-            logger.error("Error in performing Database update: " + query + "\n bean " + bean);
+            logDebugInfo("Error in performing database insert: {} with parameters {}", query, queryFilter);
+            throw new DataAccessException("Error in performing database insert: " + query, e);
         }
         return 0;
+    }
+
+    private <T extends Object> void doInternalUpdate(QueryFilter queryFilter, PreparedStatement preparedStatement)
+            throws SQLException, DataAccessException {
+        if (queryFilter != null) {
+            queryFilter.filter(preparedStatement);
+        }
+        preparedStatement.executeUpdate();
+    }
+
+    private void logDebugInfo(String s, Object... params) {
+        logDebugInfo(s, null, params);
+    }
+
+    private void logDebugInfo(String s, Exception e, Object... params) {
+        if (logger.isDebugEnabled()) {
+            logger.debug(MessageFormatter.arrayFormat(s, params).getMessage(), e);
+        }
     }
 }
