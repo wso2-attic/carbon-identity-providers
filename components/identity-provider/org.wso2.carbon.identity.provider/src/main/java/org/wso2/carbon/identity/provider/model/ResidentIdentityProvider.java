@@ -31,7 +31,7 @@ public class ResidentIdentityProvider extends IdentityProvider {
         return new ResidentIdentityProviderBuilder(id, name);
     }
 
-    protected static class ResidentIdentityProviderBuilder extends IdentityProviderBuilder {
+    protected static class ResidentIdentityProviderBuilder extends IdentityProviderBuilder<ResidentIdentityProvider> {
 
         protected ResidentIdentityProviderBuilder(int id, String name) {
             super(id, name);

@@ -106,7 +106,6 @@ public class IdentityProviderDAO {
         IdentityProvider identityProvider = this.jdbcTemplate.fetchSingleRecord(GET_ALL_IDP_SQL, (resultSet, rowNumber) -> {
             IdentityProvider.IdentityProviderBuilder identityProviderBuilder = ResidentIdentityProvider
                     .newBuilder(resultSet.getInt("ID"), resultSet.getString("NAME"));
-            identityProviderBuilder.build();
             return identityProviderBuilder.build();
         },(preparedStatement) -> {
             preparedStatement.setInt(1, identityProviderId);
@@ -122,7 +121,6 @@ public class IdentityProviderDAO {
         IdentityProvider identityProvider = this.jdbcTemplate.fetchSingleRecord(GET_ALL_IDP_SQL, (resultSet, rowNumber) -> {
             IdentityProvider.IdentityProviderBuilder identityProviderBuilder = ResidentIdentityProvider
                     .newBuilder(resultSet.getInt("ID"), resultSet.getString("NAME"));
-            identityProviderBuilder.build();
             return identityProviderBuilder.build();
         },(preparedStatement) -> {
             preparedStatement.setString(1, identityProviderName);

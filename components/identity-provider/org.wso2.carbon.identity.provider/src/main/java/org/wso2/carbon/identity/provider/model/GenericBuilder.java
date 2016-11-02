@@ -39,9 +39,6 @@ public class GenericBuilder<T> {
         this.instantiator = instantiator;
     }
 
-    public static <T> GenericBuilder<T> of(Supplier<T> instantiator) {
-        return new GenericBuilder<T>(instantiator);
-    }
 
     /**
      * The setter of the building class.
@@ -50,7 +47,7 @@ public class GenericBuilder<T> {
      * @param <U>
      * @return the builder object itself.
      */
-    public <U> GenericBuilder<T> with(BiConsumer<T, U> consumer, U value) {
+    protected <U> GenericBuilder<T> with(BiConsumer<T, U> consumer, U value) {
         Consumer<T> c = instance -> consumer.accept(instance, value);
         instanceModifiers.add(c);
         return this;
