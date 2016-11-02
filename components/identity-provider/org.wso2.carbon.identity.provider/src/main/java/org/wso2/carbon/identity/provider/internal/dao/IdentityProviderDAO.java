@@ -23,11 +23,10 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.wso2.carbon.identity.provider.IdentityProviderException;
+import org.wso2.carbon.identity.provider.dao.JdbcTemplate;
 import org.wso2.carbon.identity.provider.model.IdPMetadata;
 import org.wso2.carbon.identity.provider.model.IdentityProvider;
 import org.wso2.carbon.identity.provider.model.ResidentIdentityProvider;
-import org.wso2.carbon.identity.provider.dao.JdbcTemplate;
-
 
 import java.util.List;
 
@@ -135,4 +134,62 @@ public class IdentityProviderDAO {
     public List<IdentityProvider> listIdentityProviderByName(String identityProviderName) {
         return null;
     }
+
+    public void deleteIdentityProvider(int identityProviderId) {
+        final String DELETE_IDP_SQL = "DELETE FROM IDP WHERE ID=?";
+        this.jdbcTemplate.executeUpdate(DELETE_IDP_SQL, identityProviderId);
+    }
+
+    public void deleteIdentityProvider(String identityProviderName) {
+        final String DELETE_IDP_SQL = "DELETE FROM IDP WHERE NAME=?";
+        this.jdbcTemplate.executeUpdate(DELETE_IDP_SQL, identityProviderName);
+    }
+
+    public void enableIdentityProvider(int identityProviderId){
+        final String ENABLE_IDP_SQL = "UPDATE IDP SET IS_ENABLED=? WHERE ID=?";
+        this.jdbcTemplate.executeUpdate(ENABLE_IDP_SQL, 1, identityProviderId);
+    }
+
+    public void disableIdentityProvider(int identityProviderId){
+        final String DISABLE_IDP_SQL = "UPDATE IDP SET IS_ENABLED=? WHERE ID=?";
+        this.jdbcTemplate.executeUpdate(DISABLE_IDP_SQL, 0, identityProviderId);
+
+    }
+
+    public void enableIdentityProvider(String identityProviderName){
+        final String ENABLE_IDP_SQL = "UPDATE IDP SET IS_ENABLED=? WHERE ID=?";
+        this.jdbcTemplate.executeUpdate(ENABLE_IDP_SQL, 1, identityProviderName);
+    }
+
+    public void disableIdentityProvider(String identityProviderName){
+        final String DISABLE_IDP_SQL = "UPDATE IDP SET IS_ENABLED=? WHERE ID=?";
+        this.jdbcTemplate.executeUpdate(DISABLE_IDP_SQL, 0, identityProviderName);
+
+    }
+
+    public String getIdPNameById(int idpId){
+        final String GET_IDP_NAME_BY_ID_SQL = "SELECT NAME FROM IDP WHERE ID=?";
+
+        String identityProviderName = this.jdbcTemplate.fetchSingleRecord(GET_IDP_NAME_BY_ID_SQL,
+                (resultSet, rowNumber) -> resultSet.getString("NAME"),
+                (preparedStatement -> preparedStatement.setInt(1, idpId))
+        );
+
+        return identityProviderName;
+
+    }
+
+    public int getIdPIdByName(String idpName){
+        final String GET_IDP_ID_BY_NAME_SQL = "SELECT ID FROM IDP WHERE NAME=?";
+
+        int identityProviderId = this.jdbcTemplate.fetchSingleRecord(GET_IDP_ID_BY_NAME_SQL,
+                (resultSet, rowNumber) -> resultSet.getInt("Id"),
+                (preparedStatement -> preparedStatement.setString(1, idpName))
+        );
+
+        return identityProviderId;
+
+
+    }
+
 }
