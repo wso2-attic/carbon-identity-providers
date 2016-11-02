@@ -37,13 +37,16 @@ public class IdPMetadata implements Serializable {
     //Name seen by the end user in login page
     private String displayLabel;
     private String description;
-    //ToDO homeRealmId, federation hub
 
     // idp:cert -> 1..n
     // certs must be managed in keystore component
     // Map<certId,certAlias>
     private Map<String, String> certMap;
-
+    //Indicates the parameter service providers should send to skip the IDP option page been shown to users,
+    // to directly reach this IDP
+    private String homeRealmId;
+    //Is this IDP is to act as a federation hub in the flow
+    private Boolean isFederationHub;
     private ClaimConfig claimConfig;
     private RoleConfig roleConfig;
 
@@ -85,6 +88,14 @@ public class IdPMetadata implements Serializable {
         return roleConfig;
     }
 
+    public String getHomeRealmId() {
+        return homeRealmId;
+    }
+
+    public boolean isFederationHub() {
+        return isFederationHub;
+    }
+
 
     static IdPMetadataBuilder newBuilder(int identityProviderId, String name) {
         return new IdPMetadataBuilder(identityProviderId, name);
@@ -102,6 +113,8 @@ public class IdPMetadata implements Serializable {
         private Map<String, String> certMap;
         private ClaimConfig.ClaimConfigBuilder claimConfigBuilder;
         private RoleConfig.RoleConfigBuilder roleConfigBuilder = new RoleConfig.RoleConfigBuilder();
+        private String homeRealmId;
+        private Boolean isFederationHub;
 
         public IdPMetadataBuilder(int id, String name) {
             this.id = id;
@@ -135,6 +148,16 @@ public class IdPMetadata implements Serializable {
                 this.certMap.clear();
                 this.certMap.putAll(certMap);
             }
+            return this;
+        }
+
+        public IdPMetadataBuilder setHomeRealmId(String homeRealmId) {
+            this.homeRealmId = homeRealmId;
+            return this;
+        }
+
+        public IdPMetadataBuilder setIsFederationHub(boolean isFederationHub) {
+            this.isFederationHub = isFederationHub;
             return this;
         }
 

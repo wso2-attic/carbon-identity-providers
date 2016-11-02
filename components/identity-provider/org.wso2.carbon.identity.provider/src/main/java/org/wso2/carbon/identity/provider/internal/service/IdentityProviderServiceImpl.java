@@ -114,16 +114,19 @@ public class IdentityProviderServiceImpl implements IdentityProviderService {
 
     @Override
     public void deleteIdentityProvider(int identityProviderId) throws IdentityProviderException {
+        identityProviderDAO.deleteIdentityProvider(identityProviderId);
 
     }
 
     @Override
     public void enableIdentityProvider(int identityProviderId) throws IdentityProviderException {
+        identityProviderDAO.enableIdentityProvider(identityProviderId);
 
     }
 
     @Override
     public void disableIdentityProvider(int identityProviderId) throws IdentityProviderException {
+        identityProviderDAO.disableIdentityProvider(identityProviderId);
 
     }
 

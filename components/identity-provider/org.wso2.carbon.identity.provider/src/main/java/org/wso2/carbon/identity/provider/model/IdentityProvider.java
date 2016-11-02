@@ -41,7 +41,7 @@ public abstract class IdentityProvider implements Serializable {
     private ProvisioningConfig provisioningConfig;
 
     /**
-     * IDP properties are that...
+     * IDP properties are that are not first class details of every identity providers, but other related required details
      * Map<Emp_Id, Name>
      */
     private Map<String,Object> properties = new HashMap<>();
@@ -117,6 +117,16 @@ public abstract class IdentityProvider implements Serializable {
 
         public IdentityProviderBuilder setCerts(Map<String, String> certMap) {
             this.idPMetadataBuilder.setCerts(certMap);
+            return this;
+        }
+
+        public IdentityProviderBuilder setHomeRealmId(String homeRealmId) {
+            this.idPMetadataBuilder.setHomeRealmId(homeRealmId);
+            return this;
+        }
+
+        public IdentityProviderBuilder setIsFederationHub(Boolean isFederationHub) {
+            this.idPMetadataBuilder.setIsFederationHub(isFederationHub);
             return this;
         }
 
