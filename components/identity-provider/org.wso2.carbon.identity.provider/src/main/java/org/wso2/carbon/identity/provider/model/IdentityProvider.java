@@ -27,7 +27,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Abstract representation of an Identity Provider
+ * Abstract representation of an Identity Provider.
  * @see org.wso2.carbon.identity.provider.model.ResidentIdentityProvider
  * @see org.wso2.carbon.identity.provider.model.FederatedIdentityProvider
  */
@@ -35,14 +35,19 @@ public abstract class IdentityProvider implements Serializable {
 
     private static final long serialVersionUID = 690422066395820761L;
 
-    private boolean isEnabled;
+    private boolean enabled;
     private final IdPMetadata idPMetadata;
     private AuthenticationConfig authenticationConfig;
     private ProvisioningConfig provisioningConfig;
+
+    /**
+     * IDP properties are that...
+     * Map<Emp_Id, Name>
+     */
     private Map<String,Object> properties = new HashMap<>();
 
     IdentityProvider(IdentityProviderBuilder builder) {
-        this.isEnabled = builder.isEnabled;
+        this.enabled = builder.enabled;
         this.idPMetadata = builder.idPMetadataBuilder.build();
         this.provisioningConfig =
                 builder.provisioningConfigBuilder != null ? builder.provisioningConfigBuilder.build() : null;
@@ -52,7 +57,7 @@ public abstract class IdentityProvider implements Serializable {
     }
 
     public boolean isEnabled() {
-        return isEnabled;
+        return enabled;
     }
 
     public IdPMetadata getIdPMetadata() {
@@ -78,9 +83,9 @@ public abstract class IdentityProvider implements Serializable {
      * Builds the representation of identity provider including mata details, provisioning configuration builder,
      * authenticators and other properties.
      */
-    public static abstract class IdentityProviderBuilder {
+    public static abstract class IdentityProviderBuilder<T extends IdentityProvider> {
 
-        private boolean isEnabled = true;
+        private boolean enabled = true;
         private IdPMetadata.IdPMetadataBuilder idPMetadataBuilder;
         private ProvisioningConfig.ProvisioningConfigBuilder provisioningConfigBuilder =
                 new ProvisioningConfig.ProvisioningConfigBuilder();
@@ -95,8 +100,8 @@ public abstract class IdentityProvider implements Serializable {
             this.idPMetadataBuilder = new IdPMetadata.IdPMetadataBuilder(name);
         }
 
-        public IdentityProviderBuilder setEnabled(boolean isEnabled) {
-            this.isEnabled = isEnabled;
+        public IdentityProviderBuilder setEnabled(boolean enabled) {
+            this.enabled = enabled;
             return this;
         }
 
@@ -242,6 +247,6 @@ public abstract class IdentityProvider implements Serializable {
             return this;
         }
 
-        public abstract <T extends Object> T build() ;
+        public abstract T build() ;
     }
 }

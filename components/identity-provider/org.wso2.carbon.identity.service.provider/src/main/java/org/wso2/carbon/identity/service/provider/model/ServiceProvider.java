@@ -18,7 +18,10 @@
 
 package org.wso2.carbon.identity.service.provider.model;
 
+import org.wso2.carbon.identity.provider.model.GenericBuilder;
+
 import java.io.Serializable;
+import java.util.function.Supplier;
 
 /**
  * IAM Service Provider, representing an application.
@@ -34,6 +37,7 @@ public class ServiceProvider implements Serializable {
 
     private int applicationID = 0;
     private String applicationName;
+    private String displayLabel;
     private String description;
 
     public int getApplicationID() {
@@ -44,7 +48,67 @@ public class ServiceProvider implements Serializable {
         return applicationName;
     }
 
+    public String getDisplayLabel() {
+        return displayLabel;
+    }
+
     public String getDescription() {
         return description;
+    }
+
+    private void setApplicationID(int applicationID) {
+        this.applicationID = applicationID;
+    }
+
+    private void setApplicationName(String applicationName) {
+        this.applicationName = applicationName;
+    }
+
+    private void setDisplayLabel(String displayLabel) {
+        this.displayLabel = displayLabel;
+    }
+
+    private void setDescription(String description) {
+        this.description = description;
+    }
+
+    public static ServiceProviderBuilder newBuilder() {
+        return ServiceProviderBuilder.of(ServiceProvider::new);
+    }
+
+    public interface ServiceProviderBuildStep {
+
+        ServiceProviderBuildStep withApplicationName(String applicationName);
+
+        ServiceProviderBuildStep withDisplayLabel(String displayLabel);
+
+        ServiceProviderBuildStep withDescription(String description);
+    }
+
+    public static class ServiceProviderBuilder extends GenericBuilder<ServiceProvider>
+            implements ServiceProviderBuildStep {
+
+        public static ServiceProviderBuilder of(Supplier<ServiceProvider> instantiator) {
+            return new ServiceProviderBuilder(instantiator);
+        }
+
+        private ServiceProviderBuilder(Supplier<ServiceProvider> instantiator) {
+            super(instantiator);
+        }
+
+        @Override
+        public ServiceProviderBuilder withApplicationName(String applicationName) {
+            return (ServiceProviderBuilder) this.with(ServiceProvider::setApplicationName, applicationName);
+        }
+
+        @Override
+        public ServiceProviderBuilder withDisplayLabel(String displayLabel) {
+            return (ServiceProviderBuilder) this.with(ServiceProvider::setDisplayLabel, displayLabel);
+        }
+
+        @Override
+        public ServiceProviderBuilder withDescription(String description) {
+            return (ServiceProviderBuilder) this.with(ServiceProvider::setDescription, description);
+        }
     }
 }

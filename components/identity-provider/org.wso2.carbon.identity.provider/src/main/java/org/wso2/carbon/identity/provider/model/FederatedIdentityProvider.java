@@ -31,7 +31,7 @@ public class FederatedIdentityProvider extends IdentityProvider {
         return new FederatedIdentityProviderBuilder(id, name);
     }
 
-    public static class FederatedIdentityProviderBuilder extends IdentityProviderBuilder {
+    public static class FederatedIdentityProviderBuilder extends IdentityProviderBuilder<FederatedIdentityProvider> {
 
         private FederatedIdentityProviderBuilder(int id, String name) {
             super(id, name);

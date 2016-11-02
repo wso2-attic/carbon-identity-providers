@@ -77,13 +77,12 @@ public class ServiceProviderServiceComponent {
             service = JNDIContextManager.class,
             cardinality = ReferenceCardinality.AT_LEAST_ONE,
             policy = ReferencePolicy.DYNAMIC,
-            unbind = "onJNDIUnregister"
-    )
+            unbind = "onJNDIUnregister")
     protected void onJNDIReady(JNDIContextManager jndiContextManager) {
         try {
             Context ctx = jndiContextManager.newInitialContext();
-            DataSource dsObject = (DataSource)ctx.lookup("java:comp/env/jdbc/WSO2CarbonDB");
-            if(dsObject != null) {
+            DataSource dsObject = (DataSource) ctx.lookup("java:comp/env/jdbc/WSO2CarbonDB");
+            if (dsObject != null) {
                 jdbcTemplate = new JdbcTemplate(dsObject);
                 initializeDao(jdbcTemplate);
             } else {
@@ -99,7 +98,8 @@ public class ServiceProviderServiceComponent {
     }
 
     private void initializeDao(JdbcTemplate jdbcTemplate) {
-        ServiceProviderDAO serviceProviderDAO = new ServiceProviderDAO(jdbcTemplate);
+        ServiceProviderDAO serviceProviderDAO = new ServiceProviderDAO();
+        serviceProviderDAO.setJdbcTemplate(jdbcTemplate);
         serviceProviderService.setServiceProviderDAO(serviceProviderDAO);
     }
 }
