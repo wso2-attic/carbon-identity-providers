@@ -232,7 +232,6 @@
         <export.package></export.package>
         <import.package>
             org.slf4j.*;version="${slf4j.version}",
-            org.wso2.carbon.identity.provider.common.*;version="${project.version}",
             org.wso2.carbon.identity.provider.*;version="${project.version}",
             org.wso2.carbon.datasource.core.*;
         </import.package>
