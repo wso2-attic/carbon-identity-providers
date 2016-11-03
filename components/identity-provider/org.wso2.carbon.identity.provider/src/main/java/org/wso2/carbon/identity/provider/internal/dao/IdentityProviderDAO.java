@@ -25,6 +25,7 @@ import org.slf4j.LoggerFactory;
 import org.wso2.carbon.identity.provider.IdentityProviderException;
 import org.wso2.carbon.identity.provider.dao.DataAccessException;
 import org.wso2.carbon.identity.provider.dao.JdbcTemplate;
+import org.wso2.carbon.identity.provider.model.FederatedIdentityProvider;
 import org.wso2.carbon.identity.provider.model.IdPMetadata;
 import org.wso2.carbon.identity.provider.model.IdentityProvider;
 import org.wso2.carbon.identity.provider.model.ResidentIdentityProvider;
@@ -46,6 +47,7 @@ public class IdentityProviderDAO {
 
     /**
      * Adds an identity provider to the persistent store.
+     *
      * @param identityProvider The IdP to be added.
      * @return the ID of the newly inserted Identity provider.
      * @throws IdentityProviderException when any database level exception occurs.
@@ -142,8 +144,12 @@ public class IdentityProviderDAO {
         IdentityProvider identityProvider = null;
         try {
             identityProvider = this.jdbcTemplate.fetchSingleRecord(GET_ALL_IDP_SQL, (resultSet, rowNumber) -> {
-                IdentityProvider.IdentityProviderBuilder identityProviderBuilder = ResidentIdentityProvider
-                        .newBuilder(resultSet.getInt("ID"), resultSet.getString("NAME"));
+                IdentityProvider.IdentityProviderBuilder identityProviderBuilder = FederatedIdentityProvider
+                        .newBuilder(resultSet.getInt("ID"), resultSet.getString("NAME"))
+                        .setDisplayLabel(resultSet.getString("DISPLAY_NAME"))
+                        .setDescription(resultSet.getString("DESCRIPTION"))
+                        .setIsFederationHub(resultSet.getBoolean("IS_FEDERATION_HUB"))
+                        .setEnabled(resultSet.getBoolean("IS_ENABLED"));
                 return identityProviderBuilder.build();
             }, (preparedStatement) -> {
                 preparedStatement.setString(1, identityProviderName);
@@ -202,7 +208,7 @@ public class IdentityProviderDAO {
         try {
             this.jdbcTemplate.executeUpdate(DISABLE_IDP_SQL, preparedStatement -> {
                 preparedStatement.setString(1, "0");
-                preparedStatement.setInt(1, identityProviderId);
+                preparedStatement.setInt(2, identityProviderId);
             });
         } catch (DataAccessException e) {
             throw new IdentityProviderException(
@@ -271,9 +277,10 @@ public class IdentityProviderDAO {
         return identityProviderId;
     }
 
-    public void updateIdentityProviderMetaData(IdPMetadata idPMetadata) throws IdentityProviderException {
-        final String UPDATE_IDP_METADATA_SQL =
-                "INSERT INTO IDP (NAME, DISPLAY_NAME, DESCRIPTION, HOME_REALM_ID) " + "VALUES(?,?,?)";
+    public void updateIdentityProviderMetaData(int identityProviderId, IdPMetadata idPMetadata)
+            throws IdentityProviderException {
+        final String UPDATE_IDP_METADATA_SQL = "UPDATE IDP SET NAME=? , DISPLAY_NAME=? , DESCRIPTION=? , "
+                + "HOME_REALM_ID=? , IS_FEDERATION_HUB=? WHERE ID=?";
 
         try {
             this.jdbcTemplate.executeUpdate(UPDATE_IDP_METADATA_SQL, preparedStatement -> {
@@ -281,7 +288,8 @@ public class IdentityProviderDAO {
                 preparedStatement.setString(2, idPMetadata.getDisplayLabel());
                 preparedStatement.setString(3, idPMetadata.getDescription());
                 preparedStatement.setString(4, idPMetadata.getHomeRealmId());
-                preparedStatement.setBoolean(5, idPMetadata.isFederationHub());
+                preparedStatement.setString(5, idPMetadata.isFederationHub() ? "1" : "0");
+                preparedStatement.setInt(6, identityProviderId);
             });
         } catch (DataAccessException e) {
             throw new IdentityProviderException(
