@@ -183,8 +183,8 @@ public class IdentityProviderDAOTest {
         assertFalse(identityProvider2.getIdPMetadata().isFederationHub(),
                 "Identity provider should not be a federation hub.");
         //ToDO - check update for all parameters
-//        assertEquals(identityProvider2.getIdPMetadata().getHomeRealmId(), "Test Realm Id",
-//                "Identity provider home realm id is not updated.");
+        assertEquals(identityProvider2.getIdPMetadata().getHomeRealmId(), "Test Realm Id",
+                "Identity provider home realm id is not updated.");
 
     }
 

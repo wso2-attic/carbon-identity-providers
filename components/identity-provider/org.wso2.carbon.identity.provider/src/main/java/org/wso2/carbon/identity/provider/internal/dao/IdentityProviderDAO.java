@@ -139,7 +139,7 @@ public class IdentityProviderDAO {
 
     public IdentityProvider getIdentityProvider(String identityProviderName) throws IdentityProviderException {
         final String GET_ALL_IDP_SQL = "SELECT ID, NAME, DISPLAY_NAME, DESCRIPTION, "
-                + "IS_FEDERATION_HUB, IS_LOCAL_CLAIM_DIALECT, IS_ENABLED, ID FROM IDP WHERE NAME=?";
+                + "IS_FEDERATION_HUB, IS_LOCAL_CLAIM_DIALECT, IS_ENABLED, HOME_REALM_ID FROM IDP WHERE NAME=?";
 
         IdentityProvider identityProvider = null;
         try {
@@ -149,7 +149,8 @@ public class IdentityProviderDAO {
                         .setDisplayLabel(resultSet.getString("DISPLAY_NAME"))
                         .setDescription(resultSet.getString("DESCRIPTION"))
                         .setIsFederationHub(resultSet.getBoolean("IS_FEDERATION_HUB"))
-                        .setEnabled(resultSet.getBoolean("IS_ENABLED"));
+                        .setEnabled(resultSet.getBoolean("IS_ENABLED"))
+                        .setHomeRealmId(resultSet.getString("HOME_REALM_ID"));
                 return identityProviderBuilder.build();
             }, (preparedStatement) -> {
                 preparedStatement.setString(1, identityProviderName);
