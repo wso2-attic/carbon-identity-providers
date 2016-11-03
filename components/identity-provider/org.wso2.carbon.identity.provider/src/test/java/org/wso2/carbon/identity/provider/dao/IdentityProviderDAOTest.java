@@ -42,6 +42,7 @@ import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertNotEquals;
 import static org.testng.Assert.assertNotNull;
 import static org.testng.Assert.assertNull;
+import static org.testng.Assert.assertTrue;
 import static org.testng.Assert.fail;
 
 @Test
@@ -141,6 +142,21 @@ public class IdentityProviderDAOTest {
 
         IdentityProvider identityProvider2 = identityProviderDAO.getIdentityProvider("TestName2");
         assertFalse(identityProvider2.isEnabled(), "Identity provider should have been disabled.");
+    }
+
+    @Test
+    public void testEnableIdentityProvider() throws Exception {
+        JdbcTemplate jdbcTemplate = getJdbcTemplate();
+        IdentityProviderDAO identityProviderDAO = new IdentityProviderDAO();
+        identityProviderDAO.setJdbcTemplate(jdbcTemplate);
+
+        IdentityProvider identityProvider = createIdentityProvider("TestName2", "Test Label", "Test Desc");
+        int idpId = identityProviderDAO.createIdentityProvider(identityProvider);
+
+        identityProviderDAO.enableIdentityProvider(idpId);
+
+        IdentityProvider identityProvider2 = identityProviderDAO.getIdentityProvider("TestName2");
+        assertTrue(identityProvider2.isEnabled(), "Identity provider should have been enabled.");
     }
 
     @Test

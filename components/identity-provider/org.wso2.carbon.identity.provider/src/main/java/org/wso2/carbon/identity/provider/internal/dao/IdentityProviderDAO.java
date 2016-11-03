@@ -196,7 +196,7 @@ public class IdentityProviderDAO {
         try {
             this.jdbcTemplate.executeUpdate(ENABLE_IDP_SQL, preparedStatement -> {
                 preparedStatement.setString(1, "1");
-                preparedStatement.setInt(1, identityProviderId);
+                preparedStatement.setInt(2, identityProviderId);
             });
         } catch (DataAccessException e) {
             throw new IdentityProviderException(
@@ -235,7 +235,7 @@ public class IdentityProviderDAO {
         final String DISABLE_IDP_SQL = "UPDATE IDP SET IS_ENABLED=? WHERE ID=?";
         try {
             this.jdbcTemplate.executeUpdate(DISABLE_IDP_SQL, preparedStatement -> {
-                preparedStatement.setString(1, "1");
+                preparedStatement.setString(1, "0");
                 preparedStatement.setString(1, identityProviderName);
             });
         } catch (DataAccessException e) {
