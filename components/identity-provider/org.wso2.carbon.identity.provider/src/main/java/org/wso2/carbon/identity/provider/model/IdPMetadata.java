@@ -56,6 +56,8 @@ public class IdPMetadata implements Serializable {
         this.displayLabel = builder.displayName;
         this.description = builder.description;
         this.certMap = builder.certMap;
+        this.homeRealmId = builder.homeRealmId;
+        this.isFederationHub = builder.isFederationHub;
         this.claimConfig = (builder.claimConfigBuilder == null) ? null : builder.claimConfigBuilder.build();
         this.roleConfig = builder.roleConfigBuilder.build();
     }
