@@ -132,6 +132,7 @@ public class IdentityProviderServiceImpl implements IdentityProviderService {
 
     @Override
     public void updateIdPMetadata(int identityProviderId, IdPMetadata metadata) throws IdentityProviderException {
+        identityProviderDAO.updateIdentityProviderMetaData(identityProviderId, metadata);
 
     }
 

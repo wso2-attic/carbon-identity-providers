@@ -106,7 +106,7 @@ public class IdPMetadata implements Serializable {
     /**
      * Builder class for meta representation of an identity provider.
      */
-    static class IdPMetadataBuilder {
+    public static class IdPMetadataBuilder {
 
         private int id;
         private String name;

@@ -22,6 +22,7 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.h2.jdbcx.JdbcConnectionPool;
 import org.testng.annotations.Test;
 import org.wso2.carbon.identity.provider.internal.dao.IdentityProviderDAO;
+import org.wso2.carbon.identity.provider.model.IdPMetadata;
 import org.wso2.carbon.identity.provider.model.IdentityProvider;
 import org.wso2.carbon.identity.provider.model.ResidentIdentityProvider;
 
@@ -37,6 +38,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertNotEquals;
 import static org.testng.Assert.assertNotNull;
 import static org.testng.Assert.assertNull;
@@ -94,7 +96,6 @@ public class IdentityProviderDAOTest {
         assertEquals(identityProviderList.size(), 1, "There should be on IdP after adding");
     }
 
-
     @Test
     public void testGetIdentityProvider_Int() throws Exception {
         JdbcTemplate jdbcTemplate = getJdbcTemplate();
@@ -127,19 +128,20 @@ public class IdentityProviderDAOTest {
         assertNull(identityProvider3, "Non existing record needs to return null");
     }
 
-    //    @Test
-    //    public void testDisableIdentityProvider() throws Exception {
-    //        JdbcTemplate jdbcTemplate = getJdbcTemplate();
-    //        IdentityProviderDAO identityProviderDAO = new IdentityProviderDAO();
-    //        identityProviderDAO.setJdbcTemplate(jdbcTemplate);
-    //
-    //        createIdentityProvider("TestName2", "Test Label", "Test Desc");
-    //
-    //        identityProviderDAO.disableIdentityProvider("TestName2");
-    //
-    //        IdentityProvider identityProvider2 = identityProviderDAO.getIdentityProvider("TestName2");
-    //        assertFalse(identityProvider2.isEnabled(), "Identity provider should have been disabled.");
-    //    }
+    @Test
+    public void testDisableIdentityProvider() throws Exception {
+        JdbcTemplate jdbcTemplate = getJdbcTemplate();
+        IdentityProviderDAO identityProviderDAO = new IdentityProviderDAO();
+        identityProviderDAO.setJdbcTemplate(jdbcTemplate);
+
+        IdentityProvider identityProvider = createIdentityProvider("TestName2", "Test Label", "Test Desc");
+        int idpId = identityProviderDAO.createIdentityProvider(identityProvider);
+
+        identityProviderDAO.disableIdentityProvider(idpId);
+
+        IdentityProvider identityProvider2 = identityProviderDAO.getIdentityProvider("TestName2");
+        assertFalse(identityProvider2.isEnabled(), "Identity provider should have been disabled.");
+    }
 
     @Test
     public void testDeleteIdentityProvider_String() throws Exception {
@@ -165,12 +167,43 @@ public class IdentityProviderDAOTest {
         assertNull(identityProvider, "Non existing record needs to return null");
     }
 
+    @Test
+    public void testUpdateMetaData() throws Exception {
+        JdbcTemplate jdbcTemplate = getJdbcTemplate();
+        IdentityProviderDAO identityProviderDAO = new IdentityProviderDAO();
+        identityProviderDAO.setJdbcTemplate(jdbcTemplate);
+
+        IdentityProvider identityProvider = createIdentityProvider("TestName2", "Test Label", "Test Desc");
+        int idpId = identityProviderDAO.createIdentityProvider(identityProvider);
+
+        identityProviderDAO.updateIdentityProviderMetaData(idpId,
+                createIdentityProviderMetaData("TestName2", "Test Label", "Test Desc", false, "Test Realm Id"));
+
+        IdentityProvider identityProvider2 = identityProviderDAO.getIdentityProvider("TestName2");
+        assertFalse(identityProvider2.getIdPMetadata().isFederationHub(),
+                "Identity provider should not be a federation hub.");
+        //ToDO - check update for all parameters
+//        assertEquals(identityProvider2.getIdPMetadata().getHomeRealmId(), "Test Realm Id",
+//                "Identity provider home realm id is not updated.");
+
+    }
+
     private IdentityProvider createIdentityProvider(String name, String label, String description) {
         IdentityProvider.IdentityProviderBuilder identityProviderBuilder = ResidentIdentityProvider.newBuilder(0, name);
         identityProviderBuilder.setDialectId(1).setDisplayLabel(label).setDescription(description);
-        identityProviderBuilder.build();
 
         return identityProviderBuilder.build();
+    }
+
+    private IdPMetadata createIdentityProviderMetaData(String name, String label, String description,
+            Boolean isFederationHub, String homeRealmId) {
+
+        IdPMetadata.IdPMetadataBuilder idPMetadataBuilder = new IdPMetadata.IdPMetadataBuilder(name);
+        idPMetadataBuilder.setDisplayLabel(label).setDescription(description).setIsFederationHub(isFederationHub)
+                .setHomeRealmId(homeRealmId);
+
+        return idPMetadataBuilder.build();
+
     }
 
     private JdbcTemplate getJdbcTemplate() {
