@@ -15,61 +15,165 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-
 package org.wso2.carbon.identity.service.provider.model;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.wso2.carbon.identity.provider.model.GenericBuilder;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.function.Supplier;
 
-/**
- * IAM Service Provider, representing an application.
- * Holds
- * <ul>
- *    <li>inbound authentication</li>
- *    <li>outbound authentication, Identity provider configs</li>
- *    <li>local authentication (if any)</li>
- *    <li>claim configurations and mapping</li>
- * </ul>
- */
 public class ServiceProvider implements Serializable {
 
-    private int applicationID = 0;
-    private String applicationName;
-    private String displayLabel;
+    private static final Logger log = LoggerFactory.getLogger(ServiceProvider.class);
+
+    private int id;
+    private String name;
     private String description;
+    private LocalAndOutboundAuthenticationConfig localAndOutBoundAuthenticationConfig;
+    private InboundAuthenticationConfig inboundAuthenticationConfig;
+    //    private RequestPathAuthenticatorConfig[] requestPathAuthenticatorConfigs;  need to move into InboundAuthConfig
+    private InboundProvisioningConfig inboundProvisioningConfig;
+    private OutboundProvisioningConfig outboundProvisioningConfig;
+    private ClaimConfig claimConfig;
+    private PermissionsAndRoleConfig permissionAndRoleConfig;
+    private boolean saasApp;
+    private List<ServiceProviderProperty> spProperties = new ArrayList<>();
 
-    public int getApplicationID() {
-        return applicationID;
+    private ServiceProvider() {
+
     }
 
-    public String getApplicationName() {
-        return applicationName;
+    /**
+     * @return
+     */
+    public int getId() {
+        return id;
     }
 
-    public String getDisplayLabel() {
-        return displayLabel;
+    /**
+     * @param id
+     */
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    /**
+     * @return
+     */
+    public InboundAuthenticationConfig getInboundAuthenticationConfig() {
+        return inboundAuthenticationConfig;
+    }
+
+    /**
+     * @param inboundAuthenticationConfig
+     */
+    public void setInboundAuthenticationConfig(InboundAuthenticationConfig inboundAuthenticationConfig) {
+        this.inboundAuthenticationConfig = inboundAuthenticationConfig;
+    }
+
+    /**
+     * @return
+     */
+    public LocalAndOutboundAuthenticationConfig getLocalAndOutBoundAuthenticationConfig() {
+        return localAndOutBoundAuthenticationConfig;
+    }
+
+    /**
+     * @param localAndOutBoundAuthenticationConfig
+     */
+    public void setLocalAndOutBoundAuthenticationConfig(
+            LocalAndOutboundAuthenticationConfig localAndOutBoundAuthenticationConfig) {
+        this.localAndOutBoundAuthenticationConfig = localAndOutBoundAuthenticationConfig;
+    }
+
+    /**
+     * @return
+     */
+    public InboundProvisioningConfig getInboundProvisioningConfig() {
+        return inboundProvisioningConfig;
+    }
+
+    /**
+     * @param inboundProvisioningConfig
+     */
+    public void setInboundProvisioningConfig(InboundProvisioningConfig inboundProvisioningConfig) {
+        this.inboundProvisioningConfig = inboundProvisioningConfig;
+    }
+
+    /**
+     * @return
+     */
+    public OutboundProvisioningConfig getOutboundProvisioningConfig() {
+        return outboundProvisioningConfig;
+    }
+
+    /**
+     * @param outboundProvisioningConfig
+     */
+    public void setOutboundProvisioningConfig(OutboundProvisioningConfig outboundProvisioningConfig) {
+        this.outboundProvisioningConfig = outboundProvisioningConfig;
+    }
+
+    /**
+     * @return
+     */
+    public ClaimConfig getClaimConfig() {
+        return claimConfig;
+    }
+
+    /**
+     * @param claimConfig
+     */
+    public void setClaimConfig(ClaimConfig claimConfig) {
+        this.claimConfig = claimConfig;
+    }
+
+    /**
+     * @return
+     */
+    public PermissionsAndRoleConfig getPermissionAndRoleConfig() {
+        return permissionAndRoleConfig;
+    }
+
+    /**
+     * @param permissionAndRoleConfig
+     */
+    public void setPermissionAndRoleConfig(PermissionsAndRoleConfig permissionAndRoleConfig) {
+        this.permissionAndRoleConfig = permissionAndRoleConfig;
+    }
+
+    /**
+     * @return
+     */
+    public String getName() {
+        return name;
+    }
+
+    /**
+     * @param name
+     */
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getDescription() {
         return description;
     }
 
-    private void setApplicationID(int applicationID) {
-        this.applicationID = applicationID;
-    }
-
-    private void setApplicationName(String applicationName) {
-        this.applicationName = applicationName;
-    }
-
-    private void setDisplayLabel(String displayLabel) {
-        this.displayLabel = displayLabel;
-    }
-
-    private void setDescription(String description) {
+    public void setDescription(String description) {
         this.description = description;
+    }
+
+    public boolean isSaasApp() {
+        return saasApp;
+    }
+
+    public void setSaasApp(boolean saasApp) {
+        this.saasApp = saasApp;
     }
 
     public static ServiceProviderBuilder newBuilder() {
@@ -78,9 +182,7 @@ public class ServiceProvider implements Serializable {
 
     public interface ServiceProviderBuildStep {
 
-        ServiceProviderBuildStep withApplicationName(String applicationName);
-
-        ServiceProviderBuildStep withDisplayLabel(String displayLabel);
+        ServiceProviderBuildStep withName(String applicationName);
 
         ServiceProviderBuildStep withDescription(String description);
     }
@@ -97,13 +199,8 @@ public class ServiceProvider implements Serializable {
         }
 
         @Override
-        public ServiceProviderBuilder withApplicationName(String applicationName) {
-            return (ServiceProviderBuilder) this.with(ServiceProvider::setApplicationName, applicationName);
-        }
-
-        @Override
-        public ServiceProviderBuilder withDisplayLabel(String displayLabel) {
-            return (ServiceProviderBuilder) this.with(ServiceProvider::setDisplayLabel, displayLabel);
+        public ServiceProviderBuilder withName(String name) {
+            return (ServiceProviderBuilder) this.with(ServiceProvider::setName, name);
         }
 
         @Override

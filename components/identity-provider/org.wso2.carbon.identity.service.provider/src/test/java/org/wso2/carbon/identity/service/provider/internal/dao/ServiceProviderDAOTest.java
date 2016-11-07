@@ -76,7 +76,7 @@ public class ServiceProviderDAOTest {
     private JdbcTemplate getJdbcTemplate() {
         DataSource ds = JdbcConnectionPool.create("jdbc:h2:mem:test;DB_CLOSE_DELAY=-1", "user", "password");
 
-        try (InputStream databaseInputStream = this.getClass().getClassLoader().getResourceAsStream("dbscripts/h2.sql");
+        try (InputStream databaseInputStream = this.getClass().getClassLoader().getResourceAsStream("dbscripts/sp/h2.sql");
                 Connection conn = ds.getConnection();
                 Statement statement = conn.createStatement()) {
             statement.execute("DROP ALL OBJECTS");
