@@ -54,20 +54,19 @@ public class ServiceProviderDAO {
      * @throws IdentityProviderException
      */
     public int createServiceProvider(ServiceProvider serviceProvider) throws IdentityProviderException {
-        final String insertSpSql = "INSERT INTO SP (NAME, DISPLAY_NAME, DESCRIPTION) " + "VALUES(?,?,?)";
+        final String insertSpSql = "INSERT INTO SP (NAME, DESCRIPTION) " + "VALUES(?,?,?)";
 
         int insertedId = 0;
         try {
             insertedId = this.jdbcTemplate.executeInsert(insertSpSql, (preparedStatement) -> {
-                preparedStatement.setString(1, serviceProvider.getApplicationName());
-                preparedStatement.setString(2, serviceProvider.getDisplayLabel());
-                preparedStatement.setString(3, serviceProvider.getDescription());
+                preparedStatement.setString(1, serviceProvider.getName());
+                preparedStatement.setString(2, serviceProvider.getDescription());
 
             }, serviceProvider, true);
         } catch (DataAccessException e) {
             throw new IdentityProviderException(
                     "Error occurred in creating new the Service provider with name : " + serviceProvider
-                            .getApplicationName(), e);
+                            .getName(), e);
         }
 
         return insertedId;
@@ -80,9 +79,8 @@ public class ServiceProviderDAO {
         try {
             serviceProvider = this.jdbcTemplate.fetchSingleRecord(listAllSpSql, (resultSet, rowNumber) -> {
                 ServiceProvider.ServiceProviderBuilder serviceProviderBuilder = ServiceProvider.newBuilder()
-                        .withApplicationName(resultSet.getString("NAME"))
-                        .withDescription(resultSet.getString("DESCRIPTION"))
-                        .withDisplayLabel(resultSet.getString("DISPLAY_NAME"));
+                        .withName(resultSet.getString("NAME"))
+                        .withDescription(resultSet.getString("DESCRIPTION"));
                 return serviceProviderBuilder.build();
             }, (preparedStatement) -> {
                 preparedStatement.setInt(1, serviceProviderId);
