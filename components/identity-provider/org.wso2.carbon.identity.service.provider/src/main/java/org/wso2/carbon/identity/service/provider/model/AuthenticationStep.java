@@ -24,6 +24,10 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Authenticator flow runs in number of steps. This AuthenticationStep provides the configuration for one step
+ * in the authentication flow.
+ */
 public class AuthenticationStep implements Serializable {
 
     public enum AuthStrategy {
@@ -35,36 +39,24 @@ public class AuthenticationStep implements Serializable {
 
     private AuthStrategy authStrategy;
 
+    /**
+     * List of local authenticator configurations for this step.
+     */
     private List<LocalAuthenticatorConfig> localAuthenticatorConfigs = new ArrayList<>();
+
+    /**
+     * List of the federated Identity Providers used in this step.
+     */
     private List<IdentityProvider> federatedIdentityProviders = new ArrayList<>();
-    private boolean subjectStep;
-    private boolean attributeStep;
 
-    /**
-     * @return
-     */
-    public boolean isSubjectStep() {
-        return subjectStep;
-    }
+//    /**
+//     * Signifies that this step supplies the "Subject" to the authentication flow.
+//     */
+//    private boolean subjectIdentifierStep;
+//
+//    /**
+//     * Signifies that this step supplies all the attributes to the authentication flow.
+//     */
+//    private boolean attributeStep;
 
-    /**
-     * @param subjectStep
-     */
-    public void setSubjectStep(boolean subjectStep) {
-        this.subjectStep = subjectStep;
-    }
-
-    /**
-     * @return
-     */
-    public boolean isAttributeStep() {
-        return attributeStep;
-    }
-
-    /**
-     * @param attributeStep
-     */
-    public void setAttributeStep(boolean attributeStep) {
-        this.attributeStep = attributeStep;
-    }
 }

@@ -18,36 +18,6 @@
 
 package org.wso2.carbon.identity.service.provider.model;
 
-import java.io.Serializable;
-
-public class RoleMapping implements Serializable {
-
-    private LocalRole localRole = null;
-    private String remoteRole = null;
-
-    /**
-     * @param localRole
-     * @param remoteRole
-     */
-    public RoleMapping(LocalRole localRole, String remoteRole) {
-        this.localRole = localRole;
-        this.remoteRole = remoteRole;
-    }
-
-    public String getRemoteRole() {
-        return remoteRole;
-    }
-
-    public void setRemoteRole(String remoteRole) {
-        this.remoteRole = remoteRole;
-    }
-
-    public LocalRole getLocalRole() {
-        return localRole;
-    }
-
-    public void setLocalRole(LocalRole localRole) {
-        this.localRole = localRole;
-    }
+public class InboundProvisionerConfig {
 
 }

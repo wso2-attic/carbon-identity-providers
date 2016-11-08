@@ -25,23 +25,32 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class OutboundProvisioningConfig implements Serializable {
-
-    private List<IdentityProvider> provisioningIdentityProviders = new ArrayList<>();
-    private String[] provisionByRoleList;
+public class LocalAndOutboundProvisioningConfig implements Serializable {
 
     /**
+     * User store ID when provisioning the user.
+     */
+    private String provisioningUserStore;
+
+    /**
+     * List of Identity providers to provision the user.
+     */
+    private List<IdentityProvider> provisioningIdentityConsumers = new ArrayList<>();
+
+    /**
+     * True if the user is not provisioned on the local user store.
+     * This is similar to old "dumb mode".
      * @return
      */
-    public List<IdentityProvider> getProvisioningIdentityProviders() {
-        return Collections.unmodifiableList(provisioningIdentityProviders);
+    public boolean isProxy() {
+        return provisioningUserStore == null || provisioningUserStore.isEmpty();
     }
 
     /**
      * @return
      */
-    public String[] getProvisionByRoleList() {
-        return provisionByRoleList;
+    public List<IdentityProvider> getProvisioningIdentityConsumers() {
+        return Collections.unmodifiableList(provisioningIdentityConsumers);
     }
 
 }

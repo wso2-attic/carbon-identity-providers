@@ -19,16 +19,30 @@
 package org.wso2.carbon.identity.service.provider.model;
 
 import java.io.Serializable;
-import java.util.Properties;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
 
 public class LocalAuthenticatorConfig implements Serializable {
 
-    private static final long serialVersionUID = 3363298518257599291L;
-
+    /**
+     * The name of the local authenticator.
+     */
     protected String name;
-    protected String displayName;
+
+    /**
+     * The local authenticator is enabled or disabled.
+     */
     protected boolean enabled;
-    protected Properties properties = new Properties();
+
+    /**
+     * Authenticator properties.
+     * <code>
+     *     Map<Name, Value>
+     * </code>
+     */
+    protected Map<String, Objects> properties = new HashMap<>();
+
 
     @Override
     public boolean equals(Object o) {

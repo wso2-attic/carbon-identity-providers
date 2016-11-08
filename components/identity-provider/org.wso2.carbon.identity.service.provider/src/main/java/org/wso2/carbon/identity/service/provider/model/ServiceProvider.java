@@ -22,8 +22,8 @@ import org.slf4j.LoggerFactory;
 import org.wso2.carbon.identity.provider.model.GenericBuilder;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.function.Supplier;
 
 public class ServiceProvider implements Serializable {
@@ -35,13 +35,11 @@ public class ServiceProvider implements Serializable {
     private String description;
     private LocalAndOutboundAuthenticationConfig localAndOutBoundAuthenticationConfig;
     private InboundAuthenticationConfig inboundAuthenticationConfig;
-    //    private RequestPathAuthenticatorConfig[] requestPathAuthenticatorConfigs;  need to move into InboundAuthConfig
     private InboundProvisioningConfig inboundProvisioningConfig;
-    private OutboundProvisioningConfig outboundProvisioningConfig;
+    private LocalAndOutboundProvisioningConfig localAndOutboundProvisioningConfig;
     private ClaimConfig claimConfig;
     private PermissionsAndRoleConfig permissionAndRoleConfig;
-    private boolean saasApp;
-    private List<ServiceProviderProperty> spProperties = new ArrayList<>();
+    private Map<String, Object> spProperties = new HashMap<>();
 
     private ServiceProvider() {
 
@@ -107,15 +105,15 @@ public class ServiceProvider implements Serializable {
     /**
      * @return
      */
-    public OutboundProvisioningConfig getOutboundProvisioningConfig() {
-        return outboundProvisioningConfig;
+    public LocalAndOutboundProvisioningConfig getLocalAndOutboundProvisioningConfig() {
+        return localAndOutboundProvisioningConfig;
     }
 
     /**
-     * @param outboundProvisioningConfig
+     * @param localAndOutboundProvisioningConfig
      */
-    public void setOutboundProvisioningConfig(OutboundProvisioningConfig outboundProvisioningConfig) {
-        this.outboundProvisioningConfig = outboundProvisioningConfig;
+    public void setLocalAndOutboundProvisioningConfig(LocalAndOutboundProvisioningConfig localAndOutboundProvisioningConfig) {
+        this.localAndOutboundProvisioningConfig = localAndOutboundProvisioningConfig;
     }
 
     /**
@@ -166,14 +164,6 @@ public class ServiceProvider implements Serializable {
 
     public void setDescription(String description) {
         this.description = description;
-    }
-
-    public boolean isSaasApp() {
-        return saasApp;
-    }
-
-    public void setSaasApp(boolean saasApp) {
-        this.saasApp = saasApp;
     }
 
     public static ServiceProviderBuilder newBuilder() {

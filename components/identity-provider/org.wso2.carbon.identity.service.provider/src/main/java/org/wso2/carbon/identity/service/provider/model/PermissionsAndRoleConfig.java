@@ -22,10 +22,19 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Provides the mapping between SP to local roles.
+ */
 public class PermissionsAndRoleConfig implements Serializable {
 
-    private List<ApplicationPermission> permissions = new ArrayList<>();
-    private RoleMapping[] roleMappings = new RoleMapping[0];
-    private String[] idpRoles = new String[0];
+    /**
+     * Custom permissions enabled/disabled.
+     * Provides simple permission through API for an app to do its authorization.
+     */
+    private List<String> permissions = new ArrayList<>();
 
+    /**
+     * SP to local role mapping.
+     */
+    private RoleConfig roleConfig;
 }
