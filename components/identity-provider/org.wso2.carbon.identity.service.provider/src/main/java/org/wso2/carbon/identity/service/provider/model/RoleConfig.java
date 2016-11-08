@@ -19,17 +19,11 @@
 package org.wso2.carbon.identity.service.provider.model;
 
 import java.io.Serializable;
+import java.util.HashMap;
+import java.util.Map;
 
-public class ApplicationPermission implements Serializable {
+public class RoleConfig implements Serializable {
 
-    private String value;
-
-    public String getValue() {
-        return value;
-    }
-
-    public void setValue(String value) {
-        this.value = value;
-    }
+    private Map<Integer, String> roleMapping = new HashMap<>();
 
 }

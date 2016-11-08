@@ -19,47 +19,13 @@
 package org.wso2.carbon.identity.service.provider.model;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
+/**
+ * Configuration for inbound authentication.
+ */
 public class InboundProvisioningConfig implements Serializable {
 
-    private String provisioningUserStore;
-    private boolean provisioningEnabled;
-    private boolean isDumbMode = false;
-
-    public boolean isDumbMode() {
-        return isDumbMode;
-    }
-
-    public void setDumbMode(boolean isDumbMode) {
-        this.isDumbMode = isDumbMode;
-    }
-
-    /**
-     * @return
-     */
-    public String getProvisioningUserStore() {
-        return provisioningUserStore;
-    }
-
-    /**
-     * @param provisioningUserStore
-     */
-    public void setProvisioningUserStore(String provisioningUserStore) {
-        this.provisioningUserStore = provisioningUserStore;
-    }
-
-    /**
-     * @return
-     */
-    public boolean isProvisioningEnabled() {
-        return provisioningEnabled;
-    }
-
-    /**
-     * @param provisioningEnabled
-     */
-    public void setProvisioningEnabled(boolean provisioningEnabled) {
-        this.provisioningEnabled = provisioningEnabled;
-    }
-
+    private List<InboundProvisionerConfig> inboundProvisionerConfigs = new ArrayList<>();
 }

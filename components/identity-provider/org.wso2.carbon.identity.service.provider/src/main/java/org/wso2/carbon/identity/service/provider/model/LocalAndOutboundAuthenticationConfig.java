@@ -33,11 +33,21 @@ public class LocalAndOutboundAuthenticationConfig implements Serializable {
     //    private static final String AUTHENTICATION_STEPS = "AuthenticationSteps";
 
     private List<AuthenticationStep> authenticationSteps = new ArrayList<>();
-    private boolean alwaysSendBackAuthenticatedListOfIdPs;
 
-    /* Do we need  TenantDomain ?*/
-    private boolean useTenantDomainInLocalSubjectIdentifier = false;
-    private boolean useUserstoreDomainInLocalSubjectIdentifier = false;
-    private boolean assertUsingLocalSubjectId = true;
+    /**
+     * Send the authenticated IDP list for the current request back to the caller.
+     * e.g. JWT (TODO: Explain)
+     */
+    private boolean sendAuthenticatedIdPs;
+
+    /**
+     * Return "Domain"/"User" for the subject instead of "User" as the subject.
+     */
+    private boolean useDomainInLocalSubjectIdentifier = false;
+
+    /**
+     * Use the Local subject ID instead of IdP provided subject ID.
+     */
+    private boolean useLocalSubjectIdentifier = true;
 
 }
