@@ -25,9 +25,11 @@ import org.slf4j.LoggerFactory;
 import org.wso2.carbon.identity.provider.IdentityProviderException;
 import org.wso2.carbon.identity.provider.dao.DataAccessException;
 import org.wso2.carbon.identity.provider.dao.JdbcTemplate;
+import org.wso2.carbon.identity.provider.model.AuthenticationConfig;
 import org.wso2.carbon.identity.provider.model.FederatedIdentityProvider;
 import org.wso2.carbon.identity.provider.model.IdPMetadata;
 import org.wso2.carbon.identity.provider.model.IdentityProvider;
+import org.wso2.carbon.identity.provider.model.ProvisioningConfig;
 import org.wso2.carbon.identity.provider.model.ResidentIdentityProvider;
 
 import java.util.List;
@@ -298,5 +300,63 @@ public class IdentityProviderDAO {
                             .getName(), e);
         }
 
+    }
+
+    //ToDo after deciding the deployment model (file based or database based)
+    public void updateupdateIdPAuthenticationConfig(int identityProviderId, AuthenticationConfig authenticationConfig)
+            throws IdentityProviderException {
+//        authenticationConfig.getRequestedClaims();
+//        authenticationConfig.getAuthenticators();
+        final String UPDATE_IDP_METADATA_SQL = "UPDATE IDP SET NAME=? , DISPLAY_NAME=? , DESCRIPTION=? , "
+                + "HOME_REALM_ID=? , IS_FEDERATION_HUB=? WHERE ID=?";
+
+        try {
+            this.jdbcTemplate.executeUpdate(UPDATE_IDP_METADATA_SQL, preparedStatement -> {
+                preparedStatement.setInt(1, identityProviderId);
+            });
+        } catch (DataAccessException e) {
+            throw new IdentityProviderException(
+                    "Error occurred updating meta data for the Identity provider by the given ID: "
+                            + identityProviderId, e);
+        }
+
+    }
+
+    //ToDO after deciding the deployment model (file based or database based)
+    public void updateIdPProvisioningConfig(int identityProviderId, ProvisioningConfig provisioningConfig)
+            throws IdentityProviderException {
+
+    }
+
+    //ToDO after deciding the deployment model (file based or database based)
+    public IdentityProvider getIdPByAuthenticatorProperty(String key, String value) throws IdentityProviderException{
+        final String GET_IDP_BY_AUTHENTICATOR_PROPERTY = "SELECT idp.ID, idp.NAME, idp.IS_PRIMARY, " +
+                "idp.HOME_REALM_ID, " +
+                "idp.CERTIFICATE, idp.ALIAS, idp.INBOUND_PROV_ENABLED, idp.INBOUND_PROV_USER_STORE_ID, " +
+                "idp.USER_CLAIM_URI, " +
+                "idp.ROLE_CLAIM_URI, idp.DEFAULT_AUTHENTICATOR_NAME, idp.DEFAULT_PRO_CONNECTOR_NAME, " +
+                "idp.DESCRIPTION, " +
+                "idp.IS_FEDERATION_HUB, idp.IS_LOCAL_CLAIM_DIALECT, idp.PROVISIONING_ROLE, idp.IS_ENABLED, " +
+                "idp.DISPLAY_NAME " +
+                "FROM IDP idp INNER JOIN  IDP_AUTHENTICATOR idp_auth ON idp.ID = idp_auth.IDP_ID INNER JOIN " +
+                "IDP_AUTHENTICATOR_PROPERTY idp_auth_pro ON idp_auth.ID = idp_auth_pro.AUTHENTICATOR_ID " +
+                "WHERE  idp_auth_pro.PROPERTY_KEY =?  AND idp_auth_pro.PROPERTY_VALUE = ? ";
+
+        IdentityProvider identityProvider = null;
+        try {
+            identityProvider = this.jdbcTemplate.fetchSingleRecord(GET_IDP_BY_AUTHENTICATOR_PROPERTY, (resultSet, rowNumber) -> {
+                IdentityProvider.IdentityProviderBuilder identityProviderBuilder = ResidentIdentityProvider
+                        .newBuilder(resultSet.getInt("ID"), resultSet.getString("NAME"));
+                return identityProviderBuilder.build();
+            }, (preparedStatement) -> {
+                preparedStatement.setString(1, key);
+                preparedStatement.setString(2, value);
+            });
+        } catch (DataAccessException e) {
+            throw new IdentityProviderException(
+                    "Error occurred retrieving the Identity provider by key: " + key + " value:" + value, e);
+        }
+
+        return identityProvider;
     }
 }

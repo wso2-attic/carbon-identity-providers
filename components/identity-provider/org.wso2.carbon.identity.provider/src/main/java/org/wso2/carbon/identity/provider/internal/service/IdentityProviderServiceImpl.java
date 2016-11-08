@@ -139,12 +139,14 @@ public class IdentityProviderServiceImpl implements IdentityProviderService {
     @Override
     public void updateIdPAuthenticationConfig(int identityProviderId, AuthenticationConfig authenticationConfig)
             throws IdentityProviderException {
+        identityProviderDAO.updateupdateIdPAuthenticationConfig(identityProviderId, authenticationConfig);
 
     }
 
     @Override
     public void updateIdPProvisioningConfig(int identityProviderId, ProvisioningConfig provisioningConfig)
             throws IdentityProviderException {
+        identityProviderDAO.updateIdPProvisioningConfig(identityProviderId, provisioningConfig);
 
     }
 
