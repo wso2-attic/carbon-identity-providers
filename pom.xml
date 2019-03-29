@@ -122,7 +122,7 @@
         <!--3rd party related properties-->
         <osgi.framework.import.version.range>[1.8.0, 2.0.0)</osgi.framework.import.version.range>
         <slf4j.import.version.range>[1.7.1, 2.0.0)</slf4j.import.version.range>
-        <slf4j.version>1.7.5</slf4j.version>
+        <slf4j.version>1.7.26</slf4j.version>
         <commons-lang3.version>3.4</commons-lang3.version>
         <commons-lang3.import.version.range>(3.4, 3.5]</commons-lang3.import.version.range>
         <commons-collections.version>3.1</commons-collections.version>
