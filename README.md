@@ -1,3 +1,6 @@
+# This repository is no longer maintained.
+Issue reports and pull requests will not be attended.
+
 # carbon-identity-providers
 
 This repository keeps track of the Identity Provider(IDP) and Service Provider(SP) implementation and
